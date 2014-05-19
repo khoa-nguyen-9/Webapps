@@ -1,5 +1,5 @@
 /*
-Tables for the trader group project.
+Tables for the group project.
 
 The definitions can be loaded by running the command:
   psql my_database_name
@@ -21,7 +21,6 @@ DROP TABLE Users;
 DROP TABLE Requests;
 DROP TABLE Hints;
 DROP TABLE Locations;
-DROP TABLE UserQuestionMatching;
 
 --------------------------------------------------------------------------------------------------
 -- Next we create the tables for our database.
