@@ -1,7 +1,7 @@
 <?php
  
 /*
- * Following code will list all the products
+ * Following code will list all the users
  */
  
 // array for JSON response
@@ -13,26 +13,28 @@ require_once __DIR__ . '/db_connect.php';
 // connecting to db
 $db = new DB_CONNECT();
  
-// get all products from products table
-$result = mysql_query("SELECT *FROM products") or die(mysql_error());
+// get all users from users table
+$result = mysql_query("SELECT *FROM users") or die(mysql_error());
  
 // check for empty result
 if (mysql_num_rows($result) > 0) {
     // looping through all results
-    // products node
-    $response["products"] = array();
+    // users node
+    $response["users"] = array();
  
     while ($row = mysql_fetch_array($result)) {
         // temp user array
-        $product = array();
-        $product["pid"] = $row["pid"];
-        $product["name"] = $row["name"];
-        $product["price"] = $row["price"];
-        $product["created_at"] = $row["created_at"];
-        $product["updated_at"] = $row["updated_at"];
+        $user = array();
+        $user["userid"] = $row["userid"];
+        $user["username"] = $row["username"];
+        $user["userpassword"] = $row["userpassword"];
+        $user["credits"] = $row["credits"];
+        $user["questionid"] = $row["questionid"];
+	$user["answeredquestionid"] = $row["answeredquestionid"];
+	$user["locationid"] = $row["locationid"];
  
-        // push single product into final response array
-        array_push($response["products"], $product);
+        // push single user into final response array
+        array_push($response["users"], $user);
     }
     // success
     $response["success"] = 1;
@@ -40,9 +42,9 @@ if (mysql_num_rows($result) > 0) {
     // echoing JSON response
     echo json_encode($response);
 } else {
-    // no products found
+    // no users found
     $response["success"] = 0;
-    $response["message"] = "No products found";
+    $response["message"] = "No users found";
  
     // echo no users JSON
     echo json_encode($response);

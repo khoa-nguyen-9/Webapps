@@ -1,8 +1,8 @@
 <?php
  
 /*
- * Following code will get single product details
- * A product is identified by product id (pid)
+ * Following code will get single user details
+ * A user is identified by user id (Userid)
  */
  
 // array for JSON response
@@ -15,11 +15,11 @@ require_once __DIR__ . '/db_connect.php';
 $db = new DB_CONNECT();
  
 // check for post data
-if (isset($_GET["pid"])) {
-    $pid = $_GET['pid'];
+if (isset($_GET["userid"])) {
+    $id = $_GET['userid'];
  
-    // get a product from products table
-    $result = mysql_query("SELECT *FROM products WHERE pid = $pid");
+    // get a user from users table
+    $result = mysql_query("SELECT *FROM users WHERE userid = $id");
  
     if (!empty($result)) {
         // check for empty result
@@ -27,35 +27,36 @@ if (isset($_GET["pid"])) {
  
             $result = mysql_fetch_array($result);
  
-            $product = array();
-            $product["pid"] = $result["pid"];
-            $product["name"] = $result["name"];
-            $product["price"] = $result["price"];
-            $product["description"] = $result["description"];
-            $product["created_at"] = $result["created_at"];
-            $product["updated_at"] = $result["updated_at"];
+            $user = array();
+            $user["userID"] = $result["userid"];
+            $user["username"] = $result["username"];
+            $user["userPassword"] = $result["userpassword"];
+            $user["credits"] = $result["credits"];
+            $user["questionid"] = $result["questionid"];
+            $user["answeredquestionid"] = $result["answeredquestionid"];
+	    $user["locationid"] = $result["locationid"];
             // success
             $response["success"] = 1;
  
             // user node
-            $response["product"] = array();
+            $response["user"] = array();
  
-            array_push($response["product"], $product);
+            array_push($response["user"], $user);
  
             // echoing JSON response
             echo json_encode($response);
         } else {
-            // no product found
+            // no user found
             $response["success"] = 0;
-            $response["message"] = "No product found";
+            $response["message"] = "No user found";
  
             // echo no users JSON
             echo json_encode($response);
         }
     } else {
-        // no product found
+        // no user found
         $response["success"] = 0;
-        $response["message"] = "No product found";
+        $response["message"] = "No user found";
  
         // echo no users JSON
         echo json_encode($response);

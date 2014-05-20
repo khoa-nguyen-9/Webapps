@@ -2,18 +2,18 @@
  
 /*
  * Following code will create a new user row
- * All product details are read from HTTP Post Request
+ * All user details are read from HTTP Post Request
  */
  
 // array for JSON response
 $response = array();
  
 // check for required fields
-if (isset($_POST['UserID']) && isset($_POST['price']) && isset($_POST['description'])) {
+if (isset($_POST['userid']) && isset($_POST['username']) && isset($_POST['userpassword'])) {
  
-    $name = $_POST['name'];
-    $price = $_POST['price'];
-    $description = $_POST['description'];
+    $ID = $_POST['userid'];
+    $name = $_POST['username'];
+    $password = $_POST['userpassword'];
  
     // include db connect class
     require_once __DIR__ . '/db_connect.php';
@@ -22,13 +22,13 @@ if (isset($_POST['UserID']) && isset($_POST['price']) && isset($_POST['descripti
     $db = new DB_CONNECT();
  
     // mysql inserting a new row
-    $result = mysql_query("INSERT INTO products(name, price, description) VALUES('$name', '$price', '$description')");
+    $result = mysql_query("INSERT INTO users(userid, username, userpassword, credits) VALUES('$ID', '$name', '$password', 10)");
  
     // check if row inserted or not
     if ($result) {
         // successfully inserted into database
         $response["success"] = 1;
-        $response["message"] = "Product successfully created.";
+        $response["message"] = "user successfully created.";
  
         // echoing JSON response
         echo json_encode($response);

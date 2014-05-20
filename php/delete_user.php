@@ -1,16 +1,16 @@
 <?php
  
 /*
- * Following code will delete a product from table
- * A product is identified by product id (pid)
+ * Following code will delete a user from table
+ * A user is identified by id (UserID)
  */
  
 // array for JSON response
 $response = array();
  
 // check for required fields
-if (isset($_POST['pid'])) {
-    $pid = $_POST['pid'];
+if (isset($_POST['userid'])) {
+    $id = $_POST['userid'];
  
     // include db connect class
     require_once __DIR__ . '/db_connect.php';
@@ -19,20 +19,20 @@ if (isset($_POST['pid'])) {
     $db = new DB_CONNECT();
  
     // mysql update row with matched pid
-    $result = mysql_query("DELETE FROM products WHERE pid = $pid");
+    $result = mysql_query("DELETE FROM users WHERE userid = $id");
  
     // check if row deleted or not
     if (mysql_affected_rows() > 0) {
         // successfully updated
         $response["success"] = 1;
-        $response["message"] = "Product successfully deleted";
+        $response["message"] = "User successfully deleted";
  
         // echoing JSON response
         echo json_encode($response);
     } else {
-        // no product found
+        // no user found
         $response["success"] = 0;
-        $response["message"] = "No product found";
+        $response["message"] = "No user found";
  
         // echo no users JSON
         echo json_encode($response);

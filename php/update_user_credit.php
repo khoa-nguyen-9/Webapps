@@ -9,12 +9,10 @@
 $response = array();
  
 // check for required fields
-if (isset($_POST['pid']) && isset($_POST['name']) && isset($_POST['price']) && isset($_POST['description'])) {
+if (isset($_POST['userid']) && isset($_POST['credits'])) {
  
-    $pid = $_POST['pid'];
-    $name = $_POST['name'];
-    $price = $_POST['price'];
-    $description = $_POST['description'];
+    $id = $_POST['userID'];
+    $credits = $_POST['credits'];
  
     // include db connect class
     require_once __DIR__ . '/db_connect.php';
@@ -23,13 +21,13 @@ if (isset($_POST['pid']) && isset($_POST['name']) && isset($_POST['price']) && i
     $db = new DB_CONNECT();
  
     // mysql update row with matched pid
-    $result = mysql_query("UPDATE products SET name = '$name', price = '$price', description = '$description' WHERE pid = $pid");
+    $result = mysql_query("UPDATE products SET credits = '$credit' WHERE userid = $id");
  
     // check if row inserted or not
     if ($result) {
         // successfully updated
         $response["success"] = 1;
-        $response["message"] = "Product successfully updated.";
+        $response["message"] = "User successfully updated.";
  
         // echoing JSON response
         echo json_encode($response);
