@@ -1,5 +1,5 @@
 /*
-Example tables for the trader group project.
+Example tables for the trader group project
 
 The definitions can be loaded by running the command:
   psql my_database_name
