@@ -7,7 +7,9 @@
  
 // array for JSON response
 $response = array();
- 
+$_POST['userid']=3;
+$_POST['username']=khoa;
+$_POST['userpassword']='5453';
 // check for required fields
 if (isset($_POST['userid']) && isset($_POST['username']) && isset($_POST['userpassword'])) {
  
@@ -19,7 +21,7 @@ if (isset($_POST['userid']) && isset($_POST['username']) && isset($_POST['userpa
     require_once __DIR__ . '/db_config.php';
  
     // connecting to db
-    $db = pg_connect( "$host $port $dbname $credentials"  );
+    $db = pg_connect( "$host $port $dbname $user $credentials"  );
     if(!$db){
       echo "Error : Unable to open database\n";
     } else {
