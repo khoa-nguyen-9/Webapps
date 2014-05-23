@@ -16,13 +16,19 @@ if (isset($_POST['userid']) && isset($_POST['username']) && isset($_POST['userpa
     $password = $_POST['userpassword'];
  
     // include db connect class
-    require_once __DIR__ . '/db_connect.php';
+    require_once __DIR__ . '/db_config.php';
  
     // connecting to db
-    $db = new DB_CONNECT();
+    $db = pg_connect( "$host $port $dbname $credentials"  );
+    if(!$db){
+      echo "Error : Unable to open database\n";
+    } else {
+      echo "Opened database successfully\n";
+    }
  
-    // mysql inserting a new row
-    $result = mysql_query("INSERT INTO users(userid, username, userpassword, credits) VALUES('$ID', '$name', '$password', 10)");
+    // postgresql inserting a new row
+
+    $result = pg_query($db, "INSERT INTO users(userid, username, userpassword, credits) VALUES('$ID', '$name', '$password', 10)");
  
     // check if row inserted or not
     if ($result) {
