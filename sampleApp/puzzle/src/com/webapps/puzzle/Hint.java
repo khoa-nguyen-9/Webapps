@@ -11,7 +11,7 @@ public class Hint {
 		this.content = con;
 	}
 	
-	// TODO: Add function to lookup the the locID from the current hintID
+	// TODO: Add function to lookup the locID from the current hintID
 	public Hint (int hintID) {
 		loc = null;
 	}

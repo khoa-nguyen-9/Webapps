@@ -20,9 +20,9 @@ public class Question {
 		this.rewards = reward;
 	}
 	
-	// TODO: Add function to lookup the the hintIDs from the current questionID
+	// TODO: Add function to lookup the hintIDs from the current questionID
 	public Question(int questID) {
-		hints = null;
+		hints = new ArrayList<Hint>();
 	}
 	
 	// Look up the table and update the hints of the question
