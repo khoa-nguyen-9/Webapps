@@ -123,8 +123,38 @@ class DB_Functions {
    /**
      * Get location by loc_id
      */
-    public function getUserByEmailAndPassword($loc_id) {
+    public function getLocationByID($loc_id) {
         $result = mysql_query("SELECT * FROM LOCATION WHERE loc_id = '$loc_id'") or die(mysql_error());
+        // check for result
+        $no_of_rows = mysql_num_rows($result);
+        if ($no_of_rows > 0) { 
+            return mysql_fetch_array($result);
+        } else {
+            // user not found
+            return false;
+        }
+    }
+
+   /**
+     * Get hint by hint_id
+     */
+    public function getHintByID($hint_id) {
+        $result = mysql_query("SELECT * FROM HINT WHERE hint_id = '$hint_id'") or die(mysql_error());
+        // check for result
+        $no_of_rows = mysql_num_rows($result);
+        if ($no_of_rows > 0) { 
+            return mysql_fetch_array($result);
+        } else {
+            // user not found
+            return false;
+        }
+    }
+
+   /**
+     * Get question by quest_id
+     */
+    public function getQuestionByID($hint_id) {
+        $result = mysql_query("SELECT * FROM HINT WHERE quest_id = '$hint_id'") or die(mysql_error());
         // check for result
         $no_of_rows = mysql_num_rows($result);
         if ($no_of_rows > 0) { 
@@ -149,6 +179,7 @@ class DB_Functions {
             return false;
         }
     }
+
 
     /**
      * Encrypting password
