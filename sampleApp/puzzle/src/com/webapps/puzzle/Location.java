@@ -23,6 +23,11 @@ public class Location {
         this.name = name;
 	}
 	
+	// TODO: Look up the table and create new location that has the provided ID
+	public Location(int locID) {
+		
+	}
+	
 	// Get X coordinate
 	public float getX() {
 		return X;
