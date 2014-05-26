@@ -10,6 +10,7 @@ public class User {
 	private ArrayList<Question> answerQuestion;
 	private ArrayList<Location> achieve;
 	
+	
 	public int getUserID () {
 		return 1;
 	}
