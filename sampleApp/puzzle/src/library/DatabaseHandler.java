@@ -1,11 +1,6 @@
 package library;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
-import org.json.JSONArray;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -13,13 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-/*
--- (The available hints per question) Question | Hint -> q_ID, h_ID
--- (Answered questions)                   Question | User -> q_ID, u_ID, reply
--- (Friends list)                                   User | User -> u1_ID, u2_ID
--- (Current location of users)             Location | User -> l_ID, u_ID
- */
- 
 public class DatabaseHandler extends SQLiteOpenHelper {
  
     // All Static variables
@@ -39,7 +27,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String TABLE_HINT = "hint";
     // Request table name
     private static final String TABLE_REQUEST = "request";
-           
+    // Available hints per question table name
+    private static final String TABLE_AV_HINTS = "available_hint";
+    // Answered questions table name
+    private static final String TABLE_ANS_QUESTION = "answered_question";
+    // Friend list table name
+    private static final String TABLE_FRIEND_LIST = "friend_list";
+    // Current Location table name
+    private static final String TABLE_CURR_LOCATION = "current_location";
+    
     // Login Table Column names - ID, name, username, pass
     private static final String KEY_U_ID = "u_id";
     private static final String KEY_U_NAME = "u_name";
@@ -68,6 +64,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_RANKING = "ranking";
     private static final String KEY_ANSWER = "answer";
     
+    // Available Hints per Question Column names - h_id, q_id
+    // Answered questions Column names - q_ID, u_ID, reply
+    // Friend list - u1_ID, u2_ID
+    // Current Location -l_ID, u_ID
+    
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -80,6 +81,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
        createRequestTable(db);
        createHintTable(db);
        createQuestionTable(db);
+       createAvailableHintTable(db);
+       createAnsweredQuestionTable(db);
+       createFriendListTable(db);
+       createCurrentLocationTable(db);
     }
     
     // Create the login table
@@ -141,6 +146,39 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	db.execSQL(CREATE_QUESTION_TABLE);
     }
     
+    // Create the available hint table
+    private void createAvailableHintTable(SQLiteDatabase db) {
+    	String CREATE_AVAILABLE_HINT_TABLE = "CREATE TABLE " + TABLE_AV_HINTS + "("
+    			+ KEY_H_ID + " INT(4) NOT NULL,"
+    			+ KEY_Q_ID + " INT(4) NOT NULL" + ")";
+    	db.execSQL(CREATE_AVAILABLE_HINT_TABLE);
+    }
+    
+    // Create the answered question table
+    private void createAnsweredQuestionTable(SQLiteDatabase db) {
+    	String CREATE_ANSWERED_QUESTION_TABLE = "CREATE TABLE " + TABLE_ANS_QUESTION + "("
+    			+ KEY_Q_ID + " INT(4) NOT NULL,"
+    			+ KEY_U_ID + " INT(4) NOT NULL,"
+    			+ KEY_REPLY + " VARCHAR(50)" + ")";
+    	db.execSQL(CREATE_ANSWERED_QUESTION_TABLE);
+    }
+    
+    // Create the friend list table
+    private void createFriendListTable(SQLiteDatabase db) {
+    	String CREATE_FRIEND_LIST_TABLE = "CREATE TABLE " + TABLE_FRIEND_LIST + "("
+    			+ KEY_U_ID + "1" + " INT(4) NOT NULL,"
+    			+ KEY_U_ID + "2" + " INT(4) NOT NULL" + ")";
+    	db.execSQL(CREATE_FRIEND_LIST_TABLE);
+    }
+    
+    // Create the current location table
+    private void createCurrentLocationTable(SQLiteDatabase db) {
+    	String CREATE_CURRENT_LOCATION_TABLE = "CREATE TABLE " + TABLE_CURR_LOCATION + "("
+    			+ KEY_L_ID + " INT(4) NOT NULL,"
+    			+ KEY_U_ID + " INT(4) NOT NULL" + ")";
+    	db.execSQL(CREATE_CURRENT_LOCATION_TABLE);
+    }
+    
     // Upgrading database
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -150,7 +188,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_HINT);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_REQUEST);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_QUESTION);
-
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_AV_HINTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ANS_QUESTION);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_FRIEND_LIST);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CURR_LOCATION);
+        
         // Create tables again
         onCreate(db);
     }
@@ -231,6 +273,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	// Get the row 
     	SQLiteDatabase db = this.getReadableDatabase();
     	Cursor cursor = db.rawQuery(getUserIDQuery, null);
+    	cursor.close();
     	return Integer.parseInt(cursor.getString(0));
     }
  
@@ -257,19 +300,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return user;
     }
  
-    /**
-     * Getting user login status
-     * return true if rows are there in table
-     * */
+    // Return the number of rows in a table.
     public int getRowCount() {
-        String countQuery = "SELECT  * FROM " + TABLE_LOGIN;
-        SQLiteDatabase db = this.getReadableDatabase();
+        // Create the count query
+    	String countQuery = "SELECT  * FROM " + TABLE_LOGIN;
+        
+    	// Count the rows
+    	SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         int rowCount = cursor.getCount();
         db.close();
         cursor.close();
  
-        // return row count
+        // Return the number of rows
         return rowCount;
     }
     
@@ -285,9 +328,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	return response;
     }
     
-    /*
-     * Empty all tables
-     */
+    // Empty all tables
     public void resetTables(){
         SQLiteDatabase db = this.getWritableDatabase();
         
@@ -300,5 +341,4 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         
         db.close();
     }
- 
 }
