@@ -1,26 +1,15 @@
+
 /*
-Tables for the group project.
+ * Needed tables for the app.
+ */
 
-The definitions can be loaded by running the command:
-  psql my_database_name
-At the psql prompt you then type:
-  \i trader.sql
-Ignore any errors from the DROP commands 
-(these commands a just removing tables from your database if you have previously set up the database).
-  
-You can use:   
-  pg_dump -f filename database
-to save the data and definition of a database in this format. If you want to make complex changes to 
-the database you may find it easiest to edit the definitions below and reload this file.
-*/
+-- First we tidy up earlier versions of the tables if they exist to avoid conflicts and to make sure they are holding the needed attributes.
 
---------------------------------------------------------------------------------------------------
--- First we tidy up earlier versions of the tables if they exist to avoid conflicts.
-DROP TABLE Question;
+DROP TABLE Questions;
 DROP TABLE Users;
-DROP TABLE Request;
-DROP TABLE Hint;
-DROP TABLE Location;
+DROP TABLE Requests;
+DROP TABLE Hints;
+DROP TABLE Locations;
 
 --------------------------------------------------------------------------------------------------
 
@@ -49,26 +38,27 @@ CREATE TABLE Location(
 Contains the information about the user. There will be one row for each user.
 */
 CREATE TABLE Users(
-  UserID integer Primary Key, --unique user ID
-  UserName text unique not null, --unique username for each user
-  UserPassword text unique not null, --unique password for user
-  Credits double precision not null DEFAULT 10, --credit of the user 
-  QuestionID integer[], --list of questions for the user 
-  AnsweredQuestionID integer[], --list of questions that have been answered by the user  
-  LocationID integer[] --list of locations the user has checked in 
-);
+  `user_id` int(11) NOT NULL AUTO_INCREMENT, -- unique, autoincrementing user ID
+  `user_name` varchar(64) COLLATE utf8_unicode_ci NOT NULL, -- unique user's name
+  `user_password_hash` varchar(255) COLLATE utf8_unicode_ci NOT NULL, -- user password in salted and hashed format
+  `user_email` varchar(64) COLLATE utf8_unicode_ci NOT NULL, -- user's email, unique'
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `user_name` (`user_name`),
+  UNIQUE KEY `user_email` (`user_email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 /*
 -- Questions table --
-Contains the information about the questions. There will be one row for each question.
-*/
+Contains the information about the questions. There will be one row for each question*/
 CREATE TABLE Question(
-  QuestionID integer Primary Key, --unique question ID
-  Content text, --the content of the question
+  `question_id` int(11) NOT NULL AUTO_INCREMENT, --unique question ID
+  `content` varchar(150) COLLATE utf8_unicode_ci NOT NULL, --the content of the question
   Makers integer, --user ID of the user who made the question, default is admin
   HintID integer[], --list of hints for the question
   Locations integer[], --the location corresponses to the hints
-  Ranking integer --ranking of the question in leaderboard  
+  Ranking integer, --ranking of the question in leaderboard  
+  PRIMARY KEY (`question_id`)
 );
 
 /*
