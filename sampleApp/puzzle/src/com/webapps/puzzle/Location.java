@@ -32,6 +32,10 @@ public class Location {
 		return name;
 	}
 	
-	
+	// TODO: make a class to populate database  
+	public Location getData(String hintID) {
+		return null;
+		
+	}
 
 }
