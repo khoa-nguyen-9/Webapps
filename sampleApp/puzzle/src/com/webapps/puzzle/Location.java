@@ -1,6 +1,6 @@
 package com.webapps.puzzle;
 
-public class Location {
+public class Location { 
 	private static float X;
     private static float Y;
     private static String name;
@@ -33,9 +33,8 @@ public class Location {
 	}
 	
 	// TODO: make a class to populate database  
-	public Location getData(String hintID) {
+	public Location getLocation(int locID) {
 		return null;
-		
 	}
 
 }
