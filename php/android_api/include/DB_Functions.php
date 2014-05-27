@@ -44,14 +44,14 @@ class DB_Functions {
      * Storing new location
      * returns location details
      */
-    public function storeLocation($x, $y, $name) {
+    public function storeLocation($x, $y, $l_name) {
         $uuid = uniqid('', true);
-        $result = mysql_query("INSERT INTO LOCATION(loc_id, x, y, name) VALUES('$uuid', '$x', '$y', '$name')");
+        $result = mysql_query("INSERT INTO location(l_id, x, y, l_name) VALUES('$uuid', '$x', '$y', '$l_name')");
         // check for successful store
         if ($result) {
             // get user details
             $lid = mysql_insert_id(); // last inserted id
-            $result = mysql_query("SELECT * FROM LOCATION WHERE loc_id = $lid");
+            $result = mysql_query("SELECT * FROM LOCATION WHERE l_id = $lid");
             // return user details
             return mysql_fetch_array($result);
         } else {
@@ -63,14 +63,14 @@ class DB_Functions {
      * Storing new hint
      * returns hint details
      */
-    public function storeHint($loc_id, $content) {
+    public function storeHint($l_id, $content) {
         $uuid = uniqid('', true);
-        $result = mysql_query("INSERT INTO HINT(hint_id, loc_id, content) VALUES('$uuid', '$loc_id', '$content')");
+        $result = mysql_query("INSERT INTO hint(h_id, l_id, content) VALUES('$uuid', '$l_id', '$content')");
         // check for successful store
         if ($result) {
             // get user details
             $hid = mysql_insert_id(); // last inserted id
-            $result = mysql_query("SELECT * FROM HINT WHERE hint_id = $hid");
+            $result = mysql_query("SELECT * FROM HINT WHERE h_id = $hid");
             // return user details
             return mysql_fetch_array($result);
         } else {
@@ -82,9 +82,9 @@ class DB_Functions {
      * Storing new Question
      * returns question details
      */
-    public function storeQuestion($maker_id, $content, $ranking, $answer, $reward) {
+    public function storeQuestion($maker, $q_content, $ranking, $answer, $reward) {
         $uuid = uniqid('', true);
-        $result = mysql_query("INSERT INTO QUESTION(quest_id, maker_id, content, ranking, answer, reward) VALUES('$uuid', '$maker_id', '$content', '$ranking', '$answer', '$reward')");
+        $result = mysql_query("INSERT INTO question(quest_id, maker_id, content, ranking, answer, reward) VALUES('$uuid', '$maker_id', '$content', '$ranking', '$answer', '$reward')");
         // check for successful store
         if ($result) {
             // get user details
@@ -124,7 +124,7 @@ class DB_Functions {
      * Get location by loc_id
      */
     public function getLocationByID($loc_id) {
-        $result = mysql_query("SELECT * FROM LOCATION WHERE loc_id = '$loc_id'") or die(mysql_error());
+        $result = mysql_query("SELECT * FROM location WHERE l_id = '$loc_id'") or die(mysql_error());
         // check for result
         $no_of_rows = mysql_num_rows($result);
         if ($no_of_rows > 0) { 
@@ -139,7 +139,7 @@ class DB_Functions {
      * Get hint by hint_id
      */
     public function getHintByID($hint_id) {
-        $result = mysql_query("SELECT * FROM HINT WHERE hint_id = '$hint_id'") or die(mysql_error());
+        $result = mysql_query("SELECT * FROM hint WHERE h_id = '$hint_id'") or die(mysql_error());
         // check for result
         $no_of_rows = mysql_num_rows($result);
         if ($no_of_rows > 0) { 
@@ -154,7 +154,7 @@ class DB_Functions {
      * Get question by quest_id
      */
     public function getQuestionByID($hint_id) {
-        $result = mysql_query("SELECT * FROM HINT WHERE quest_id = '$hint_id'") or die(mysql_error());
+        $result = mysql_query("SELECT * FROM hint WHERE q_id = '$hint_id'") or die(mysql_error());
         // check for result
         $no_of_rows = mysql_num_rows($result);
         if ($no_of_rows > 0) { 
