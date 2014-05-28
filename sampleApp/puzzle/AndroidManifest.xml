@@ -8,16 +8,38 @@
         android:minSdkVersion="14"
         android:targetSdkVersion="19" />
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <!-- External storage for caching. -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- User's Location -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- Maps API needs OpenGL ES 2.0. -->
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 	
 	<application android:icon="@drawable/ic_launcher" android:label="@string/app_name">
+	    
+	    <!-- Meta data for Google maps -->
+	     <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyBAy6inXezXJqP6GPfeSUFbW9FsiOrwcns" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+	    
+	    
 		<activity android:name="com.webapps.puzzle.LoginActivity" android:label="@string/app_name"
 		    
 			android:windowSoftInputMode="stateHidden"
 			android:uiOptions="splitActionBarWhenNarrow">
-			<intent-filter>
+		  	<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
+			</intent-filter>  
 		</activity>
 		<activity android:name="com.webapps.puzzle.RegisterActivity" 
 			android:icon="@drawable/ic_launcher" android:windowSoftInputMode="stateHidden" />
@@ -31,9 +53,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+		<activity android:name=".QuestionActivity" android:label="@string/app_name"
+			android:windowSoftInputMode="stateHidden" />
 		
+		<activity android:name=".MapActivity" android:label="@string/app_name"
+			android:windowSoftInputMode="stateHidden" />
 		
-		<activity android:name=".DatabaseHandler" android:label="@string/app_name"
+		<activity android:name=".AboutScreen" android:label="@string/app_name"
+			android:windowSoftInputMode="stateHidden" />
+		
+        <activity android:name=".HowToPlayActivity" android:label="@string/app_name"
+			android:windowSoftInputMode="stateHidden" />
+        
+        <activity android:name=".Settings" android:label="@string/app_name"
+			android:windowSoftInputMode="stateHidden" />
+		
+
+        		<activity android:name=".DatabaseHandler" android:label="@string/app_name"
 			android:windowSoftInputMode="stateHidden" />
 		<activity android:name=".JSONParser" android:label="@string/app_name"
 			android:windowSoftInputMode="stateHidden" />

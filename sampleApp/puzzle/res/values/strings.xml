@@ -10,5 +10,13 @@
 	<string name="questions">Questions ?</string>
 	<string name="requests">Requests</string>
 	<string name="Leaderboard">Leaderboard</string>
+	<string name="how_to_play">How To Play</string>
+	<string name="about">About</string>
+	<string name="logout">Log out</string>
+	<string name="discover">Discover your surroundings!</string>
+	<string name="notifications">Notifications:</string>
+	<string name="noNotifications">Nothing yet!</string>
+	<string name="bb">Big Ben</string>
+	<string name="TS">Trafalgar Square</string>
 
 </resources>
