@@ -1,9 +1,0 @@
-INDEX VERSION 1.126+/home/khoanguyen/webapps/sampleApp/.metadata/.plugins/org.eclipse.jdt.core
-3980671036.index
-1892559343.index
-1040579913.index
-3614377252.index
-1625678781.index
-2908287082.index
-3933507604.index
-2953779216.index
