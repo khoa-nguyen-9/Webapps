@@ -120,7 +120,7 @@ public class LoginTask extends AsyncTask<String, Void, Integer> {
 		}
 		else {
 			progressDialog.dismiss();
-			activity.showLoginError(responseCode);
+			//activity.showLoginError(responseCode);
 	
 		}
 		
