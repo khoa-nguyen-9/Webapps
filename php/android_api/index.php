@@ -76,29 +76,7 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
                 echo json_encode($response);
             }
         }
-    } else if ($tag == 'getLocation') {
-        // Request type is check Login
-        $l_id = $_POST['l_id'];
- 
-        // check for user
-        $loc = $db->getLocationByID($l_id);
-        if ($loc != false) {
-            // location found
-            // echo json with success = 1
-            $response["success"] = 1;
-            $response["uid"] = $user["unique_id"];
-            $response["location"]["l_id"] = $loc["l_id"];
-            $response["location"]["x"] = $loc["x"];
-            $response["location"]["y"] = $loc["y"];
-            $response["location"]["l_name"] = $loc["l_name"];
-            echo json_encode($response);
-        } else {
-            // user not found
-            // echo json with error = 0
-            $response["error"] = 1;
-            $response["error_msg"] = "Incorrect location!";
-            echo json_encode($response);
-        }
+    
     } else {
         echo "Invalid Request";
     }
