@@ -29,10 +29,19 @@ public class HomeFragment extends Fragment implements OnClickListener {
         dbHandler = new DatabaseHandler(getActivity().getApplicationContext());
         user = dbHandler.getUserDetails();
         TextView emailTextView = (TextView) view.findViewById(R.id.emailTextView);
-        emailTextView.setText(user.get("email"));
+        emailTextView.setText("Hi, " + user.get("name") + ". Let's play.");
         
+        btnLogout.setOnClickListener(this);
+        Button discover = (Button) view.findViewById(R.id.discover);
+        discover.setOnClickListener(new OnClickListener(){
 
-        btnLogout.setOnClickListener(this); 
+			@Override
+			public void onClick(View view) {
+				Intent events = new Intent(getActivity(), MapActivity.class);
+				startActivity(events);
+			}
+        	
+        });
 		
         
 		return view;

@@ -1,17 +1,21 @@
 package com.webapps.puzzle;
 
-import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.preference.PreferenceActivity;
 
-public class Settings extends Activity {
+public class Settings extends PreferenceActivity {
+	
 	@Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.about);
-        
-        TextView about = (TextView) findViewById(R.id.aboutText);
-        about.setText("settings go here. light/dark theme, interests, etc");
-        
+	protected void onCreate(Bundle savedInstanceState) {
+	   super.onCreate(savedInstanceState);
+	   
+	   PrefFragment prefFragment = new PrefFragment();
+	   FragmentManager fragmentManager = getFragmentManager();
+	   FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+	   fragmentTransaction.replace(android.R.id.content, prefFragment);
+	   fragmentTransaction.commit();
+	
 	}
 }

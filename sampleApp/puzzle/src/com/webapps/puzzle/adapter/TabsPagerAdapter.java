@@ -9,6 +9,7 @@ import com.webapps.puzzle.LeaderBoardFragment;
 import com.webapps.puzzle.MapsFragment;
 import com.webapps.puzzle.QuestionFragment;
 import com.webapps.puzzle.RequestFragment;
+import com.webapps.puzzle.SetUpFragment;
 
 public class TabsPagerAdapter extends FragmentPagerAdapter {
 
@@ -30,7 +31,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 			case 3:
 				return new LeaderBoardFragment();
 			case 4:
-				return new MapsFragment();
+				return new SetUpFragment();
 		}
 		return null;
 	}

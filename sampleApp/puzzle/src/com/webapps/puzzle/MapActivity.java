@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -28,16 +29,28 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
-public class MapActivity extends Activity implements android.location.LocationListener {
+import directions.Routing;
+import directions.RoutingListener;
+
+public class MapActivity extends Activity 
+                         implements android.location.LocationListener,
+                                    OnMarkerClickListener,
+                                    OnInfoWindowClickListener{
+                                  
 	
 	private GoogleMap map;
 	private int userIcon, foodIcon, drinkIcon, shopIcon, otherIcon;
@@ -46,6 +59,12 @@ public class MapActivity extends Activity implements android.location.LocationLi
 	private Marker[] placeMarkers;
 	private final int MAX_PLACES = 20; //maximum number of places returned by Google Places API
 	private MarkerOptions[] places; //to hold details of each marker
+	LatLng lastLatLng;
+	LatLng destination;
+	Polyline polyLine;
+	Marker startMarker;
+	Marker destinationMarker;
+	
 
 	  @Override
 	  protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +86,11 @@ public class MapActivity extends Activity implements android.location.LocationLi
 	    		map.moveCamera(CameraUpdateFactory.newLatLngZoom(LONDON, 15));
 	    		map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
 	    		*/
+	    		
+	    		map.setOnMarkerClickListener((OnMarkerClickListener) this);
+	    		map.setOnInfoWindowClickListener((OnInfoWindowClickListener)this);
+	    		
+	    		
 	    		placeMarkers = new Marker[MAX_PLACES];
 	    		updatePlaces();
 	    	}
@@ -80,7 +104,7 @@ public class MapActivity extends Activity implements android.location.LocationLi
 		//get last location
 		
 		double lat,lng;
-		LatLng lastLatLng;
+		
 		Location lastLoc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 		if(lastLoc != null){
 			lat = lastLoc.getLatitude();
@@ -131,21 +155,24 @@ public class MapActivity extends Activity implements android.location.LocationLi
 			e1.printStackTrace();
 		}
 		
-		
-		String placesSearchStr = "https://maps.googleapis.com/maps/api/place/nearbysearch/" +
+		//query for places, with parameters,
+		//excepting json data back
+		String placesSearchStr = 
+				"https://maps.googleapis.com/maps/api/place/nearbysearch/" +
 				"json?location="+lat+","+lng+
 				"&radius=1000&sensor=true" +
 				"&types="+ types +
-			    "&key=AIzaSyBlqzRYkapvxdgv7mtsTiVxQR1iod-jSzk"; //query for places, with parameters,
+			    "&key=AIzaSyBlqzRYkapvxdgv7mtsTiVxQR1iod-jSzk"; 
 		 
-		new GetPlaces().execute(placesSearchStr);                                                      //excepting json data back
+		new GetPlaces().execute(placesSearchStr);                                                      
 		 locationManager.requestLocationUpdates(
 				 LocationManager.NETWORK_PROVIDER, 
 				 30000, 100, this); //performnce issues with this method, consider requestSingleUpdate()
-}
-	  
-	  
-	  
+		 
+		 
+	}
+	
+  
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 	// Inflate the menu; this adds items to the action bar if it is present.
@@ -202,6 +229,11 @@ public class MapActivity extends Activity implements android.location.LocationLi
 	}
 	
 	private class GetPlaces extends AsyncTask<String,Void, String>{
+		//first param: search URL as a string. 
+		//second param: void as we don't indicate progress
+		//third type: background op returns a JSON string representing places
+		
+		
 		//fetch and parse places data
 		@Override
 		protected String doInBackground(String... placesURL) {
@@ -304,6 +336,7 @@ public class MapActivity extends Activity implements android.location.LocationLi
 						.icon(BitmapDescriptorFactory.fromResource(currIcon))
 						.snippet(vicinity);
 						
+						
 					}
 				}
 				
@@ -339,5 +372,104 @@ public class MapActivity extends Activity implements android.location.LocationLi
 	    Log.v("MainActivity", "status changed");
 	}
 
+	@Override
+	public boolean onMarkerClick(Marker marker) {
+		 QuestionActivity.checkIn1 = true;
+		 Toast.makeText(this, "check in set to true", Toast.LENGTH_LONG).show(); //TODO: remove		
+		if(marker == null) return false;
+		Log.v("current and toGO", "current: " + lastLatLng.toString() +
+				"toGO: " + marker.getPosition().toString());
+		
+		removeDirectionsMarkers();
+	    marker.showInfoWindow();
+		
+		
+		if(Math.abs(marker.getPosition().latitude - lastLatLng.latitude) < 0.0005
+		&& Math.abs(marker.getPosition().longitude - lastLatLng.longitude) < 0.0005){
+			return true;
+		}
+		
+	    
+		
+		destination = marker.getPosition(); 
+		Routing routing = new Routing(Routing.TravelMode.WALKING);
+		 //Log.v("start", lastLatLng.toString());
+		 
+		 if(destination != null){
+		 Log.v("destination",destination.toString());
+	     routing.registerListener(new RoutingListener(){
+
+			@Override
+			public void onRoutingFailure() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onRoutingStart() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onRoutingSuccess(PolylineOptions mPolyOptions) {
+				  PolylineOptions polyoptions = new PolylineOptions();
+			      polyoptions.color(Color.BLUE);
+			      polyoptions.width(10);
+			      polyoptions.addAll(mPolyOptions.getPoints());
+			      polyLine = map.addPolyline(polyoptions);
+
+			      
+			      // Start marker
+			      MarkerOptions options = new MarkerOptions();
+			      options.position(lastLatLng);
+			      options.icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue));
+			      startMarker = map.addMarker(options);
+
+			      // End marker
+			      options = new MarkerOptions();
+			      options.position(destination);
+			      options.icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green)); 
+			      
+			      destinationMarker = map.addMarker(options);
+			}
+	    	 
+	     });
+	     routing.execute(lastLatLng, destination);
+	     
+	     marker.hideInfoWindow();
+	     Toast.makeText(this, "Directions to " + 
+	                               marker.getTitle(), Toast.LENGTH_LONG).show();
+	     
+	     
+		 }else{
+			 Log.v("destination", "null");
+		 }
+		return true;
+	}
+
+	private void removeDirectionsMarkers() {
+		if(polyLine != null && startMarker != null && destinationMarker != null){
+			polyLine.remove();
+			startMarker.remove();
+			destinationMarker.remove();
+		}
+	}
+
+	@Override
+	public void onInfoWindowClick(Marker marker) {
+		if(Math.abs(marker.getPosition().latitude - lastLatLng.latitude) < 0.0005
+		&& Math.abs(marker.getPosition().longitude - lastLatLng.longitude) < 0.0005
+		&& !marker.getTitle().equals("You are here")){
+			removeDirectionsMarkers();
+			if(!marker.isInfoWindowShown()){
+				marker.showInfoWindow();
+			}
+			Toast.makeText(this,"You have checked in at " + marker.getTitle(),
+			    	Toast.LENGTH_LONG).show();
+		   
+		}
+		
+	}
 }
 
