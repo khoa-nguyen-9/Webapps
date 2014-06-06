@@ -37,6 +37,7 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
             $response["user"]["email"] = $user["email"];
             $response["user"]["created_at"] = $user["created_at"];
             $response["user"]["updated_at"] = $user["updated_at"];
+			$response["user"]["uid"] = $user["uid"];
             echo json_encode($response);
         } else {
             // user not found

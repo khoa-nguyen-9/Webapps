@@ -9,6 +9,7 @@
 /**
  * check for POST request
  */
+
 if (isset($_POST['tag']) && $_POST['tag'] != '') {
     // get tag
     $tag = $_POST['tag'];
@@ -41,6 +42,33 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
             // echo json with error = 0
             $response["error"] = 1;
             $response["error_msg"] = "Incorrect location details!";
+            echo json_encode($response);
+        }
+	} else if ($tag == 'getAllLocations') {
+ 
+        // check for question
+        $result = $db->getAllLocations();
+        if (mysql_num_rows($result) > 0) {
+			$response["locations"] = array();
+            // question found
+            // echo json with success = 1
+            $response["success"] = 1;
+            while ($row = mysql_fetch_array($result)) {
+				// temp question array
+				$location = array();
+				$location["lid"] = $row["lid"];
+				$location["x"] = $row["x"];
+				$location["y"] = $row["y"];
+				$location["lname"] = $row["lname"];
+				// push single question into final response array
+				array_push($response["locations"], $location);
+			}
+            echo json_encode($response);
+        } else {
+            // question not found
+            // echo json with error = 0
+            $response["error"] = 1;
+            $response["error_msg"] = "Incorrect location!";
             echo json_encode($response);
         }
     } else if ($tag == 'storeLocation') {

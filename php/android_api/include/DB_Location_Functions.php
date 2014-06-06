@@ -36,6 +36,21 @@ class DB_Location_Functions {
         }
     }
 	
+   /**
+     * Get all questions
+     */
+    public function getAllLocations() {
+        $result = mysql_query("SELECT * FROM location") or die(mysql_error());
+        // check for result
+        $no_of_rows = mysql_num_rows($result);
+        if ($no_of_rows > 0) { 
+            return $result;
+        } else {
+            // question not found
+            return false;
+        }
+    }
+	
 	/**
      * Storing new location
      * returns location details

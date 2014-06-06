@@ -35,12 +35,17 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
             $response["question"]["qid"] = $question["qid"];
             $response["question"]["maker"] = $question["maker"];
             $response["question"]["qcontent"] = $question["qcontent"];
-	    $response["question"]["qranking"] = $question["qranking"];
-	    $response["question"]["answer"] = $question["answer"];
-	    $response["question"]["rewards"] = $question["rewards"];
-	    $response["question"]["base"] = $question["base"];
+			$response["question"]["qranking"] = $question["qranking"];
+			$response["question"]["answer"] = $question["answer"];
+			$response["question"]["rewards"] = $question["rewards"];
+			$response["question"]["base"] = $question["base"];
             $response["question"]["publish"] = $question["publish"];
             $response["question"]["hints"] = $question["hints"];
+			$response["question"]["locations"] = $question["locations"];
+			$response["question"]["x"] = $question["x"];
+			$response["question"]["y"] = $question["y"];
+			$response["question"]["lname"] = $question["lname"];
+			$response["question"]["hcontent"] = $question["hcontent"];
             echo json_encode($response);
         } else {
             // question not found
@@ -70,8 +75,13 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
 				$question["answer"] = $row["answer"];
 				$question["rewards"] = $row["rewards"];
 				$question["base"] = $row["base"];
-                                $question["publish"] = $row["publish"];
-                                $question["hints"] = $row["hints"];
+                $question["publish"] = $row["publish"];
+                $question["hints"] = $row["hints"];
+				$question["locations"] = $row["locations"];
+				$question["x"] = $row["x"];
+				$question["y"] = $row["y"];
+				$question["lname"] = $row["lname"];
+				$question["hcontent"] = $row["hcontent"];
 				// push single question into final response array
 				array_push($response["questions"], $question);
 			}
@@ -104,8 +114,13 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
 				$question["answer"] = $row["answer"];
 				$question["rewards"] = $row["rewards"];
 				$question["base"] = $row["base"];
-                                $question["publish"] = $row["publish"];
-                                $question["hints"] = $row["hints"];
+                $question["publish"] = $row["publish"];
+                $question["hints"] = $row["hints"];
+				$question["locations"] = $row["locations"];
+				$question["x"] = $row["x"];
+				$question["y"] = $row["y"];
+				$question["lname"] = $row["lname"];
+				$question["hcontent"] = $row["hcontent"];
 				// push single question into final response array
 				array_push($response["questions"], $question);
 			}
@@ -139,8 +154,13 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
 				$question["answer"] = $row["answer"];
 				$question["rewards"] = $row["rewards"];
 				$question["base"] = $row["base"];
-                                $question["publish"] = $row["publish"];
-                                $question["hints"] = $row["hints"];
+                $question["publish"] = $row["publish"];
+                $question["hints"] = $row["hints"];
+				$question["locations"] = $row["locations"];
+				$question["x"] = $row["x"];
+				$question["y"] = $row["y"];
+				$question["lname"] = $row["lname"];
+				$question["hcontent"] = $row["hcontent"];
 				// push single question into final response array
 				array_push($response["questions"], $question);
 			}
@@ -152,6 +172,43 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
             $response["error_msg"] = "Incorrect question maker!";
             echo json_encode($response);
         }	
+	} else if ($tag == 'getAllQuestions') {
+ 
+        // check for question
+        $result = $db->getAllQuestions();
+        if (mysql_num_rows($result) > 0) {
+			$response["questions"] = array();
+            // question found
+            // echo json with success = 1
+            $response["success"] = 1;
+            while ($row = mysql_fetch_array($result)) {
+				// temp question array
+				$question = array();
+				$question["qid"] = $row["qid"];
+				$question["maker"] = $row["maker"];
+				$question["qcontent"] = $row["qcontent"];
+				$question["qranking"] = $row["qranking"];
+				$question["answer"] = $row["answer"];
+				$question["rewards"] = $row["rewards"];
+				$question["base"] = $row["base"];
+                $question["publish"] = $row["publish"];
+                $question["hints"] = $row["hints"];
+				$question["locations"] = $row["locations"];
+				$question["x"] = $row["x"];
+				$question["y"] = $row["y"];
+				$question["lname"] = $row["lname"];
+				$question["hcontent"] = $row["hcontent"];
+				// push single question into final response array
+				array_push($response["questions"], $question);
+			}
+            echo json_encode($response);
+        } else {
+            // question not found
+            // echo json with error = 0
+            $response["error"] = 1;
+            $response["error_msg"] = "Incorrect question maker!";
+            echo json_encode($response);
+        }
 	} else if ($tag == 'storeQuestion') {
         // Request type is store question
         $maker = $_POST['maker'];
@@ -160,8 +217,8 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
 		$answer = $_POST['answer'];
 		$rewards = $_POST['rewards'];
 		$base = $_POST['base'];
-                $publish = $_POST['publish'];
-                $hints = $_POST['hints'];
+        $publish = $_POST['publish'];
+        $hints = $_POST['hints'];
 
         // store question
         $question = $db->storeQuestion($maker, $qcontent, $qranking, $answer, $rewards, $base, $publish, $hints);
@@ -171,12 +228,17 @@ if (isset($_POST['tag']) && $_POST['tag'] != '') {
             $response["question"]["qid"] = $question["qid"];
             $response["question"]["maker"] = $question["maker"];
             $response["question"]["qcontent"] = $question["qcontent"];
-	    $response["question"]["qranking"] = $question["qranking"];
-	    $response["question"]["answer"] = $question["answer"];
-	    $response["question"]["rewards"] = $question["rewards"];
-	    $response["question"]["base"] = $question["base"];
+			$response["question"]["qranking"] = $question["qranking"];
+			$response["question"]["answer"] = $question["answer"];
+			$response["question"]["rewards"] = $question["rewards"];
+			$response["question"]["base"] = $question["base"];
             $response["question"]["publish"] = $question["publish"];
             $response["question"]["hints"] = $question["hints"];
+			$response["question"]["locations"] = $question["locations"];
+			$response["question"]["x"] = $question["x"];
+			$response["question"]["y"] = $question["y"];
+			$response["question"]["lname"] = $question["lname"];
+			$response["question"]["hcontent"] = $question["hcontent"];
             echo json_encode($response);
         } else {
             // question failed to store

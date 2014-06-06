@@ -22,8 +22,8 @@ class DB_Userinfo_Functions {
      * Storing new question
      * returns question details
      */
-    public function storeUserinfo($uid, $friends, $answered, $checked, $chints, $challenge) {
-        $result = mysql_query("INSERT INTO userinfo(uid, friends, answered, checked, chints, challenge) VALUES('$uid', '$friends', '$answered', '$checked', '$chints', '$challenge')");
+    public function storeUserinfo($uid, $friends, $answered, $checked, $chints, $challenge, $frequest, $lrequest, $hrequest, $x, $y, $lname, $requester, $credits, $username) {
+        $result = mysql_query("INSERT INTO userinfo(uid, friends, answered, checked, chints, challenge, frequest, lrequest, hrequest, x, y, lname, requester, credits, username) VALUES('$uid', '$friends', '$answered', '$checked', '$chints', '$challenge', '$frequest', '$lrequest', '$hrequest', '$x', '$y', '$lname', '$requester', '$credits', '$username')");
         // check for successful store
         if ($result) {
             // get userinfo details
@@ -46,6 +46,21 @@ class DB_Userinfo_Functions {
             return mysql_fetch_array($result);
         } else {
             // userinfo not found
+            return false;
+        }
+    }
+	
+	/**
+     * Get all userinfo
+     */
+    public function getAllUserinfo() {
+        $result = mysql_query("SELECT * FROM userinfo") or die(mysql_error());
+        // check for result
+        $no_of_rows = mysql_num_rows($result);
+        if ($no_of_rows > 0) { 
+            return $result;
+        } else {
+            // question not found
             return false;
         }
     }

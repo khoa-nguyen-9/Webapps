@@ -22,8 +22,8 @@ class DB_Question_Functions {
      * Storing new question
      * returns question details
      */
-    public function storeQuestion($maker, $qcontent, $qranking, $answer, $rewards, $base, $publish, $hints) {
-        $result = mysql_query("INSERT INTO question(maker, qcontent, qranking, answer, rewards, base, publish, hints) VALUES('$maker', '$qcontent', '$qranking', '$answer', '$rewards', '$base', '$publish', '$hints')");
+    public function storeQuestion($maker, $qcontent, $qranking, $answer, $rewards, $base, $publish, $hints, $locations, $x, $y, $lname, $hcontent) {
+        $result = mysql_query("INSERT INTO question(maker, qcontent, qranking, answer, rewards, base, publish, hints, locations, x, y, lname, hcontent) VALUES('$maker', '$qcontent', '$qranking', '$answer', '$rewards', '$base', '$publish', '$hints', '$location', '$x', '$y', '$lname', '$hcontent')");
         // check for successful store
         if ($result) {
             // get question details
@@ -51,11 +51,11 @@ class DB_Question_Functions {
         }
     }
 	
-   /**
-     * Get question by maker
+	  /**
+     * Get all questions
      */
-    public function getQuestionByMaker($maker) {
-        $result = mysql_query("SELECT * FROM question WHERE maker = '$maker'") or die(mysql_error());
+    public function getAllQuestions() {
+        $result = mysql_query("SELECT * FROM question") or die(mysql_error());
         // check for result
         $no_of_rows = mysql_num_rows($result);
         if ($no_of_rows > 0) { 
@@ -67,10 +67,10 @@ class DB_Question_Functions {
     }
 	
    /**
-     * Get question by maker
+     * Get all questions
      */
-    public function getQuestionByRanking($qranking) {
-        $result = mysql_query("SELECT * FROM question WHERE qranking = '$qranking'") or die(mysql_error());
+    public function getQuestionByMaker($maker) {
+        $result = mysql_query("SELECT * FROM question") or die(mysql_error());
         // check for result
         $no_of_rows = mysql_num_rows($result);
         if ($no_of_rows > 0) { 
@@ -80,6 +80,8 @@ class DB_Question_Functions {
             return false;
         }
     }
+
+	
 	
 	/**
      * Get question by maker
@@ -95,6 +97,22 @@ class DB_Question_Functions {
             return false;
         }
     }
+	
+	/**
+     * Get question by ranking
+     */
+    public function getQuestionByRanking($qranking) {
+        $result = mysql_query("SELECT * FROM question WHERE qranking = '$qranking'") or die(mysql_error());
+        // check for result
+        $no_of_rows = mysql_num_rows($result);
+        if ($no_of_rows > 0) { 
+            return $result;
+        } else {
+            // question not found
+            return false;
+        }
+    }
 }
 
 ?>
+	
