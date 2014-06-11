@@ -1,46 +1,19 @@
 package com.webapps.puzzle;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import library.DatabaseHandler;
-import library.JSONParser;
 import library.UserFunctions;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class LoginTask extends AsyncTask<String, Void, Integer> {
 
 	private ProgressDialog progressDialog;
 	private LoginActivity activity;
-	private int id = -1;
-	private JSONParser jsonParser;
-	private static String loginURL = "http://khoatestsite.hostoi.com/android_api/";
-	private static String registerURL = "http://khoatestsite.hostoi.com/android_api/";
 	private static String KEY_SUCCESS = "success";
-	private static String KEY_ERROR = "error";
-	private static String KEY_ERROR_MSG = "error_msg";
 	private static String KEY_UID = "uid";
 	private static String KEY_NAME = "name";
 	private static String KEY_EMAIL = "email";
@@ -106,10 +79,7 @@ public class LoginTask extends AsyncTask<String, Void, Integer> {
 
 	@Override
 	protected void onPostExecute(Integer responseCode)
-	{
-		EditText userName = (EditText)activity.findViewById(R.id.loginEmail);
-		EditText passwordEdit = (EditText)activity.findViewById(R.id.loginPassword);
-		
+	{	
 
 		if (responseCode == 1) {
 			progressDialog.dismiss();

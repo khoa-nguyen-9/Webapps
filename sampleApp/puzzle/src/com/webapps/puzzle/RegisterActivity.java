@@ -1,17 +1,10 @@
 package com.webapps.puzzle;
-
-import org.json.JSONException;
-import org.json.JSONObject;
- 
-import library.DatabaseHandler;
-import library.UserFunctions;
  
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,15 +18,6 @@ public class RegisterActivity extends Activity {
     EditText inputEmail;
     EditText inputPassword;
     TextView registerErrorMsg;
- 
-    // JSON Response node names
-    private static String KEY_SUCCESS = "success";
-    private static String KEY_ERROR = "error";
-    private static String KEY_ERROR_MSG = "error_msg";
-    private static String KEY_UID = "uid";
-    private static String KEY_NAME = "name";
-    private static String KEY_EMAIL = "email";
-    private static String KEY_CREATED_AT = "created_at";
  
     @Override
     public void onCreate(Bundle savedInstanceState) {

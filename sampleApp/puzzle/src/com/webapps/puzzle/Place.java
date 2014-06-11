@@ -1,5 +1,7 @@
 package com.webapps.puzzle;
 
+import java.io.Serializable;
+
 import library.LocationFunctions;
 
 import org.json.JSONException;
@@ -8,7 +10,7 @@ import org.json.JSONObject;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
-public class Place {
+public class Place implements Serializable{
 	
 	private static String KEY_SUCCESS = "success";
 	private static String KEY_LID = "lid";
@@ -20,30 +22,13 @@ public class Place {
 	private float X;
     private float Y;
     private String name;
-    
-    // Create new location with X and Y coordinate only
-	public Place(float x, float y) {
-        this.X = x;
-        this.Y = y;
-    }
-	
-	// Create new location with name only
-	public Place(String name) {
-		this.name = name;
-	}
 	
 	// Create new location with X,Y coordinates and name
-	public Place(float x, float y, String name) {
+	public Place(int lid, float x, float y, String name) {
+		this.lid = lid;
 		this.X = x;
         this.Y = y;
         this.name = name;
-	}
-	
-	// Look up the table and create new location that has the provided ID
-	public Place(int lid, ProgressDialog progressDialog) {
-		GetLocationTask l = new GetLocationTask(progressDialog, lid);
-		l.execute();
-		this.lid = lid;
 	}
 	
 	// Add new location to the database, update lid
@@ -160,7 +145,7 @@ public class Place {
 		protected Integer doInBackground(String... arg0) {
 			
 			LocationFunctions locationFunction = new LocationFunctions();
-			JSONObject json = locationFunction.addQuestion(Float.toString(X),Float.toString(Y),name);
+			JSONObject json = locationFunction.addLocation(Float.toString(X),Float.toString(Y),name);
 			
 			// check for login response
 			try {

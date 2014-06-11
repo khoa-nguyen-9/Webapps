@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+ 
+  <PreferenceCategory
+   android:summary="App"
+   android:title="App Settings" >
+  <CheckBoxPreference
+     android:key="checkBox"
+     android:summary="On/Off"
+     android:title="Keep me logged in" />
+ 
+  <ListPreference
+     android:entries="@array/listOptions"
+     android:entryValues="@array/listValues"
+     android:key="listpref"
+     android:summary="Light/Dark"
+     android:title="Theme" />
+ </PreferenceCategory>
+ 
+  <PreferenceCategory
+   android:summary="preferences"
+   android:title="Question preferences" >
+  
+      <MultiSelectListPreference
+        android:dialogTitle="Where do you want to go?"
+        android:key="pref"
+        android:summary="set your preferences"        
+        android:title="Preferences"
+        android:entries="@array/question_types"
+        android:entryValues="@array/question_entry_values"
+        android:defaultValue="@array/empty_array"
+        />
+      
+   </PreferenceCategory>
+</PreferenceScreen>

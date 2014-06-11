@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
  
 
+
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
@@ -18,6 +19,7 @@ public class QuestionFunctions {
     private static String get_by_maker_tag = "getQuestionByMaker";
     private static String get_by_ranking_tag = "getQuestionByRanking";
     private static String get_by_base_tag = "getQuestionByBase";
+    private static String update_ranking_tag = "updateRanking";
     private static String add_tag = "storeQuestion";
  
     private static String delete_tag = "deleteQuestion";
@@ -72,6 +74,16 @@ public class QuestionFunctions {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("tag", get_by_base_tag));
         params.add(new BasicNameValuePair("base", base));
+        JSONObject json = jsonParser.getJSONFromUrl(questionURL, params);
+        return json;
+    }
+    
+    // update user's challenge
+    public JSONObject updateRanking(String qid, String qranking) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", update_ranking_tag));
+        params.add(new BasicNameValuePair("qid", qid));
+        params.add(new BasicNameValuePair("qranking", qranking));
         JSONObject json = jsonParser.getJSONFromUrl(questionURL, params);
         return json;
     }

@@ -1,11 +1,7 @@
 package com.webapps.puzzle;
 
-import java.util.HashMap;
-
-import library.DatabaseHandler;
 import library.UserFunctions;
 import android.app.ActionBar;
-import android.app.ProgressDialog;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.FragmentTransaction;
@@ -24,11 +20,6 @@ public class DashboardActivity extends FragmentActivity implements
 		private ViewPager viewpager;
 		private TabsPagerAdapter mAdapter;
 		private ActionBar actionBar;
-		
-		protected User currentUser;
-		
-		DatabaseHandler dbHandler;
-	    private HashMap<String, String> user;
 	    
 		private String[] tabs = {"HOME","QUESTIONS","REQUESTS",
 				"LEADERBOARD", "ADD QUESTIONS"};
@@ -37,14 +28,8 @@ public class DashboardActivity extends FragmentActivity implements
 
 	    @Override
 	    public void onCreate(Bundle savedInstanceState) {
-	        super.onCreate(savedInstanceState);
-	        
-	        dbHandler = new DatabaseHandler(getApplicationContext());
-	        user = dbHandler.getUserDetails();
-	        ProgressDialog progressDialog = new ProgressDialog(DashboardActivity.this);
-			progressDialog.setMessage("Getting user info ...");
-	        currentUser = new User(Integer.parseInt(user.get("uid")), progressDialog);  
-	        
+	        super.onCreate(savedInstanceState); 
+
 	        userFunctions = new UserFunctions();
 	        if(userFunctions.isUserLoggedIn(getApplicationContext())){
 	       // user already logged in show databoard

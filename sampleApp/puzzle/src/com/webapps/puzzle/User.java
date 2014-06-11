@@ -1,21 +1,18 @@
 package com.webapps.puzzle;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import library.LocationFunctions;
 import library.UserInfoFunctions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.util.Log;
 
-public class User {
+public class User implements Serializable {
 	
 	private static String KEY_SUCCESS = "success";
 	private static String KEY_FRIENDS = "friends";
@@ -25,33 +22,81 @@ public class User {
 	private static String KEY_CHALLENGE = "challenge";
 	private static String KEY_FREQUEST = "frequest";
 	private static String KEY_LREQUEST = "lrequest";
+	private static String KEY_REQUESTER = "requester";
 	private static String KEY_CREDITS = "credits";
+	private static String KEY_USERNAME = "username";
 	
-	private String userName;						// User Name
-	
+	private String username;						// User Name
 	private int uid;
 	private Set<Integer> friends;				// List of ID friends of the user
 	private Set<Integer> answered;	            // List of question IDs the user answered
 	private Set<Integer> checked;	            // List of location IDs the user has checked in
 	private Set<Integer> chints; 			    // List of hint IDs the user has obtained
-	private Set<Integer> challenge;			// List of question IDs the user has been challenged
-	private Set<Integer> frequest;               // List of user IDs friend request
-	private Set<Integer> lrequest;               // List of location requested by other;
+	private Set<Integer> challenge;				// List of question IDs the user has been challenged
+	private Set<Integer> frequest;              // List of user IDs friend request
+	private int[] lrequest;               		// List of location requested by other
+	private int[] requester;					// List of user ID who made the request
 	private int credits;
 	
-	// TODO: Add function to lookup the IDs from the current userID
-	public User (int userID, ProgressDialog progressDialog) {
-		GetUserInfoTask g = new GetUserInfoTask(userID, progressDialog);
-		g.execute();
-		this.uid = userID;
+	public User (int uid, Set<Integer> friends, Set<Integer> answered, Set<Integer> checked, Set<Integer> chints, Set<Integer> challenge, Set<Integer> frequest, int[] lrequest, int[] requester, int credits, String username) {
+		this.uid = uid;
+		this.friends = friends;
+		this.answered = answered;
+		this.checked = checked;
+		this.chints = chints;
+		this.challenge = challenge;
+		this.frequest = frequest;
+		this.lrequest = lrequest;
+		this.requester = requester;
+		this.credits = credits;
+		this.username = username;
 	}
-	
-	// // TODO: Add function to lookup the user data from the current UserID
-	public void updateUserChints(int hid) {
-		UpdateUserChintsTask u = new UpdateUserChintsTask(uid, hid);
+
+	public void updateUserFriends(int fid) {
+		UpdateUserFriendsTask u = new UpdateUserFriendsTask(fid);
 		u.execute();
 	}
 	
+	public void updateUserAnswered(int qid) {
+		UpdateUserAnsweredTask u = new UpdateUserAnsweredTask(qid);
+		u.execute();
+	}
+	
+	public void updateUserChecked(int lid) {
+		UpdateUserCheckedTask u = new UpdateUserCheckedTask(lid);
+		u.execute();
+	}
+	
+	public void updateUserChints(int hid) {
+		UpdateUserChintsTask u = new UpdateUserChintsTask(hid);
+		u.execute();
+	}
+	
+	public void updateUserChallenge(int qid) {
+		UpdateUserChallengeTask u = new UpdateUserChallengeTask(qid);
+		u.execute();
+	}
+	
+	public void updateUserLrequest(int lid) {
+		UpdateUserLrequestTask u = new UpdateUserLrequestTask(lid);
+		u.execute();
+	}
+	
+	public void updateUserFrequest(int fid) {
+		UpdateUserFrequestTask u = new UpdateUserFrequestTask(fid);
+		u.execute();
+	}
+	
+	public void updateUserRequester(int rid) {
+		UpdateUserRequesterTask u = new UpdateUserRequesterTask(rid);
+		u.execute();
+	}
+	
+	public void updateUserCredits(int credits) {
+		UpdateUserCreditsTask u = new UpdateUserCreditsTask(credits);
+		u.execute();
+	}
+
 	// Return userID 
 	public int getUserID () {
 		return uid;
@@ -59,7 +104,7 @@ public class User {
 	
 	// Return the userName 
 	public String getUserName() {
-		return userName;
+		return username;
 	}
 	
 	// Return the friend IDs 
@@ -93,8 +138,14 @@ public class User {
 	}
 	
 	// Return the IDs of the location request
-	public Set<Integer> getLocationRequest() {
+	public int[] getLocationRequest() {
 		return lrequest;
+	}
+	
+
+	// Return the IDs of the location request
+	public int[] getRequester() {
+		return requester;
 	}
 	
 	// Return the credits of the user
@@ -110,6 +161,10 @@ public class User {
 	// Minus credits
 	public void minusCredits(int amount) {
 		this.credits  -= amount;
+	}
+	
+	public String getUsername() {
+		return username;
 	}
 	
 	// AsyncTask to get a location from database 
@@ -154,11 +209,6 @@ public class User {
 						for (int i = 0; i < tokens.length-1; i++) {
 							answered.add(Integer.parseInt(tokens[i+1]));
 						}
-						tokens = json_userinfo.getString(KEY_ANSWERED).split("\\s");
-						answered = new HashSet<Integer>();
-						for (int i = 0; i < tokens.length-1; i++) {
-							answered.add(Integer.parseInt(tokens[i+1]));
-						}
 						tokens = json_userinfo.getString(KEY_CHECKED).split("\\s");
 						checked = new HashSet<Integer>();
 						for (int i = 0; i < tokens.length-1; i++) {
@@ -180,11 +230,16 @@ public class User {
 							frequest.add(Integer.parseInt(tokens[i+1]));
 						}
 						tokens = json_userinfo.getString(KEY_LREQUEST).split("\\s");
-						lrequest = new HashSet<Integer>();
-						for (int i = 0; i < tokens.length-1; i++) {
-							lrequest.add(Integer.parseInt(tokens[i+1]));
+						lrequest = new int[tokens.length - 1];
+						for (int i = 0; i < lrequest.length; i++) {
+							lrequest[i] = Integer.parseInt(tokens[i+1]);
 						}
-						
+						tokens = json_userinfo.getString(KEY_REQUESTER).split("\\s");
+						requester = new int[tokens.length - 1];
+						for (int i = 0; i < requester.length; i++) {
+							requester[i] = Integer.parseInt(tokens[i+1]);
+						}
+						username = json_userinfo.getString(KEY_USERNAME);
 						credits = Integer.parseInt(json_userinfo.getString(KEY_CREDITS));
 						responseCode = 1;
 					}else{
@@ -214,21 +269,19 @@ public class User {
 	// AsyncTask to update friend IDs from database 
 	private class UpdateUserFriendsTask extends AsyncTask<String, Void, Integer> {
 
-		private String uid;
 		private String friendid;
 		
 		private int responseCode = 0;
 
-		public UpdateUserFriendsTask(int uid, int friendid)
+		public UpdateUserFriendsTask(int friendid)
 		{
-			this.uid = Integer.toString(uid);
 			this.friendid = Integer.toString(friendid);
 		}
 
 		protected Integer doInBackground(String... arg0) {
 			
 			UserInfoFunctions userInfoFunction = new UserInfoFunctions();
-			JSONObject json = userInfoFunction.updateFriends(uid, friendid);
+			JSONObject json = userInfoFunction.updateFriends(Integer.toString(uid), friendid);
 			
 			// check for login response
 			try {
@@ -265,21 +318,19 @@ public class User {
 	// AsyncTask to update answered question IDs from database 
 	private class UpdateUserAnsweredTask extends AsyncTask<String, Void, Integer> {
 
-		private String uid;
 		private String answeredid;
 		
 		private int responseCode = 0;
 
-		public UpdateUserAnsweredTask(int uid, int answeredid)
+		public UpdateUserAnsweredTask(int answeredid)
 		{
-			this.uid = Integer.toString(uid);
 			this.answeredid = Integer.toString(answeredid);
 		}
 
 		protected Integer doInBackground(String... arg0) {
 			
 			UserInfoFunctions userInfoFunction = new UserInfoFunctions();
-			JSONObject json = userInfoFunction.updateAnswered(uid, answeredid);
+			JSONObject json = userInfoFunction.updateAnswered(Integer.toString(uid), answeredid);
 			
 			// check for login response
 			try {
@@ -316,21 +367,19 @@ public class User {
 	// AsyncTask to update checked location IDs from database 
 	private class UpdateUserCheckedTask extends AsyncTask<String, Void, Integer> {
 
-		private String uid;
 		private String checkedid;
 		
 		private int responseCode = 0;
 
-		public UpdateUserCheckedTask(int uid, int checkedid)
+		public UpdateUserCheckedTask(int checkedid)
 		{
-			this.uid = Integer.toString(uid);
 			this.checkedid = Integer.toString(checkedid);
 		}
 
 		protected Integer doInBackground(String... arg0) {
 			
 			UserInfoFunctions userInfoFunction = new UserInfoFunctions();
-			JSONObject json = userInfoFunction.updateChecked(uid, checkedid);
+			JSONObject json = userInfoFunction.updateChecked(Integer.toString(uid), checkedid);
 			
 			// check for login response
 			try {
@@ -367,21 +416,19 @@ public class User {
 	// AsyncTask to update checked hint IDs from database 
 	private class UpdateUserChintsTask extends AsyncTask<String, Void, Integer> {
 
-		private String uid;
 		private String chintid;
 		
 		private int responseCode = 0;
 
-		public UpdateUserChintsTask(int uid, int chintid)
+		public UpdateUserChintsTask(int chintid)
 		{
-			this.uid = Integer.toString(uid);
 			this.chintid = Integer.toString(chintid);
 		}
 
 		protected Integer doInBackground(String... arg0) {
 			
 			UserInfoFunctions userInfoFunction = new UserInfoFunctions();
-			JSONObject json = userInfoFunction.updateChints(uid, chintid);
+			JSONObject json = userInfoFunction.updateChints(Integer.toString(uid), chintid);
 			
 			// check for login response
 			try {
@@ -418,21 +465,19 @@ public class User {
 	// AsyncTask to update checked location IDs from database 
 	private class UpdateUserChallengeTask extends AsyncTask<String, Void, Integer> {
 
-		private String uid;
 		private String questid;
 		
 		private int responseCode = 0;
 
-		public UpdateUserChallengeTask(int uid, int questid)
+		public UpdateUserChallengeTask(int questid)
 		{
-			this.uid = Integer.toString(uid);
 			this.questid = Integer.toString(questid);
 		}
 
 		protected Integer doInBackground(String... arg0) {
 			
 			UserInfoFunctions userInfoFunction = new UserInfoFunctions();
-			JSONObject json = userInfoFunction.updateChallenge(uid, questid);
+			JSONObject json = userInfoFunction.updateChallenge(Integer.toString(uid), questid);
 			
 			// check for login response
 			try {
@@ -469,21 +514,19 @@ public class User {
 	// AsyncTask to update checked location IDs from database 
 	private class UpdateUserFrequestTask extends AsyncTask<String, Void, Integer> {
 
-		private String uid;
 		private String friendid;
 		
 		private int responseCode = 0;
 
-		public UpdateUserFrequestTask(int uid, int friendid)
+		public UpdateUserFrequestTask(int friendid)
 		{
-			this.uid = Integer.toString(uid);
 			this.friendid = Integer.toString(friendid);
 		}
 
 		protected Integer doInBackground(String... arg0) {
 			
 			UserInfoFunctions userInfoFunction = new UserInfoFunctions();
-			JSONObject json = userInfoFunction.updateChallenge(uid, friendid);
+			JSONObject json = userInfoFunction.updateFrequest(Integer.toString(uid), friendid);
 			
 			// check for login response
 			try {
@@ -520,21 +563,19 @@ public class User {
 	// AsyncTask to update checked location IDs from database 
 	private class UpdateUserLrequestTask extends AsyncTask<String, Void, Integer> {
 
-		private String uid;
 		private String lid;
 		
 		private int responseCode = 0;
 
-		public UpdateUserLrequestTask(int uid, int lid)
+		public UpdateUserLrequestTask(int lid)
 		{
-			this.uid = Integer.toString(uid);
 			this.lid = Integer.toString(lid);
 		}
 
 		protected Integer doInBackground(String... arg0) {
 			
 			UserInfoFunctions userInfoFunction = new UserInfoFunctions();
-			JSONObject json = userInfoFunction.updateChallenge(uid, lid);
+			JSONObject json = userInfoFunction.updateLrequest(Integer.toString(uid), lid);
 			
 			// check for login response
 			try {
@@ -545,9 +586,9 @@ public class User {
 						JSONObject json_userinfo = json.getJSONObject("userinfo");
 						//Log.v("name", json_user.getString(KEY_NAME));
 						String[] tokens = json_userinfo.getString(KEY_LREQUEST).split("\\s");
-						lrequest = new HashSet<Integer>();
+						lrequest = new int[tokens.length-1];
 						for (int i = 0; i < tokens.length-1; i++) {
-							lrequest.add(Integer.parseInt(tokens[i+1]));
+							lrequest[i] = Integer.parseInt(tokens[i+1]);
 						}
 						responseCode = 1;
 					}else{
@@ -567,25 +608,73 @@ public class User {
 			return responseCode;
 		}
 	}
+
+	// AsyncTask to update checked location IDs from database 
+	private class UpdateUserRequesterTask extends AsyncTask<String, Void, Integer> {
+
+		private String lid;
+		
+		private int responseCode = 0;
+
+		public UpdateUserRequesterTask(int lid)
+		{
+			this.lid = Integer.toString(lid);
+		}
+
+		protected Integer doInBackground(String... arg0) {
+			
+			UserInfoFunctions userInfoFunction = new UserInfoFunctions();
+			JSONObject json = userInfoFunction.updateRequester(Integer.toString(uid), lid);
+			
+			// check for login response
+			try {
+				if (json.getString(KEY_SUCCESS) != null) {
+					String res = json.getString(KEY_SUCCESS);
+
+					if(Integer.parseInt(res) == 1){
+						JSONObject json_userinfo = json.getJSONObject("userinfo");
+						//Log.v("name", json_user.getString(KEY_NAME));
+						String[] tokens = json_userinfo.getString(KEY_REQUESTER).split("\\s");
+						requester = new int[tokens.length-1];
+						for (int i = 0; i < tokens.length-1; i++) {
+							requester[i] = Integer.parseInt(tokens[i+1]);
+						}
+						responseCode = 1;
+					}else{
+						responseCode = 0;
+						// Error in login
+					}
+				}
+
+			} catch (NullPointerException e) {
+				e.printStackTrace();
+
+			}
+			catch (JSONException e) {
+				e.printStackTrace();
+			}
+			
+			return responseCode;
+		}
+	}
+
 	
 	// AsyncTask to update checked location IDs from database 
 	private class UpdateUserCreditsTask extends AsyncTask<String, Void, Integer> {
 
-		private String uid;
 		private String newcredits;
 		
 		private int responseCode = 0;
 
-		public UpdateUserCreditsTask(int uid, int newcredits)
+		public UpdateUserCreditsTask(int newcredits)
 		{
-			this.uid = Integer.toString(uid);
 			this.newcredits = Integer.toString(newcredits);
 		}
 
 		protected Integer doInBackground(String... arg0) {
 			
 			UserInfoFunctions userInfoFunction = new UserInfoFunctions();
-			JSONObject json = userInfoFunction.updateChecked(uid, newcredits);
+			JSONObject json = userInfoFunction.updateCredits(Integer.toString(uid), newcredits);
 			
 			// check for login response
 			try {
@@ -605,7 +694,7 @@ public class User {
 	}
 	
 	// Async task to add a new location to database
-	private class AddUserTask extends AsyncTask<String, Void, Integer> {
+	public class AddUserTask extends AsyncTask<String, Void, Integer> {
 		private String uid;
 		private int responseCode = 0;
 		
@@ -617,7 +706,7 @@ public class User {
 		protected Integer doInBackground(String... arg0) {
 			
 			UserInfoFunctions userinfoFunction = new UserInfoFunctions();
-			JSONObject json = userinfoFunction.addUser(uid);
+			JSONObject json = userinfoFunction.addUser(uid,uid);
 			
 			// check for login response
 			try {
@@ -625,7 +714,6 @@ public class User {
 					String res = json.getString(KEY_SUCCESS);
 
 					if(Integer.parseInt(res) == 1){
-						JSONObject json_userinfo = json.getJSONObject("userinfo");
 						//Log.v("name", json_user.getString(KEY_NAME));
 						responseCode = 1;
 					}else{

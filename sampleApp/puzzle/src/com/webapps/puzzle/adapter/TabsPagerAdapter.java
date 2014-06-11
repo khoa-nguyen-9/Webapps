@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.webapps.puzzle.HomeFragment;
 import com.webapps.puzzle.LeaderBoardFragment;
-import com.webapps.puzzle.MapsFragment;
 import com.webapps.puzzle.QuestionFragment;
 import com.webapps.puzzle.RequestFragment;
 import com.webapps.puzzle.SetUpFragment;

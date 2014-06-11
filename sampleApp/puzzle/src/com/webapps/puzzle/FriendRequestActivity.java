@@ -1,9 +1,20 @@
 package com.webapps.puzzle;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import library.DatabaseHandler;
 import library.UserFunctions;
+import library.UserInfoFunctions;
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
@@ -21,8 +32,19 @@ public class FriendRequestActivity extends Activity{
 	ListView userList;
     Button submit;
  
-    String[] listContent = {"User 1", "User 2", "User 3", "User 4",
-    		                 "User 5"};
+	private static String KEY_SUCCESS = "success";
+	private static String KEY_UID = "uid";
+	private static String KEY_FRIENDS = "friends";
+	private static String KEY_FREQUEST = "frequest";
+	private static String KEY_USERNAME = "username";
+	
+	User[] friendRequests;
+	User currentUser;
+	
+	protected DatabaseHandler dbHandler;
+	private HashMap<String, String> user;
+    
+    String[] listContent = {};
  
     /** Called when the activity is first created. */
  
@@ -30,55 +52,12 @@ public class FriendRequestActivity extends Activity{
  
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        if(listContent.length == 0){
-        	setContentView(R.layout.main);
-        	LinearLayout ll = (LinearLayout)findViewById(R.id.basiclayout);
-
-        	TextView text = new TextView(this);
-        	text.setText("No requests.");
-        	text.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        	ll.addView(text);
-        }else{
-        
-	        setContentView(R.layout.activity_ask);
-	 
-	        userList = (ListView)findViewById(R.id.friendlist);
-	 
-	        submit = (Button)findViewById(R.id.challengesubmit);
-	        submit.setText("Add as friend");
-	        
-	        
-	 
-	        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-	 
-	                android.R.layout.simple_list_item_multiple_choice, listContent);
-	 
-	        userList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-	        userList.setAdapter(adapter);
-	 
-	        submit.setOnClickListener(new Button.OnClickListener(){
-	 
-	            @Override
-	            public void onClick(View v) {
-	
-	            	String selected = "";
-	                int cntChoice = userList.getCount();
-	                SparseBooleanArray sparseBooleanArray = 
-	                		                  userList.getCheckedItemPositions();
-	 
-	                for(int i = 0; i < cntChoice; i++){
-	                    if(sparseBooleanArray.get(i)) {
-	                         selected += 
-	                              userList.getItemAtPosition(i).toString() + "\n";
-	                    }
-	                 }
-	                Toast.makeText(FriendRequestActivity.this,selected + 
-	                		"added as friends",Toast.LENGTH_LONG).show();
-	                
-	                //TODO: add selected user to player's friends
-	            }});
-        }
+        dbHandler = new DatabaseHandler(getApplicationContext());
+        user = dbHandler.getUserDetails();
+        ProgressDialog progressDialog = new ProgressDialog(this);
+		progressDialog.setMessage("Getting user info ...");
+		GetUserFriendRequestsTask g = new GetUserFriendRequestsTask(Integer.parseInt(user.get("uid")), progressDialog);
+        g.execute();
     }
     
     @Override
@@ -118,4 +97,154 @@ public class FriendRequestActivity extends Activity{
 	    return super.onOptionsItemSelected(item);
 	}
 
+	
+	// AsyncTask to get friends from database 
+	private class GetUserFriendRequestsTask extends AsyncTask<String, Void, Integer> {
+			
+		private String uid;
+		private ProgressDialog progressDialog;
+		private int responseCode = 0;
+	
+		public GetUserFriendRequestsTask(int uid, ProgressDialog progressDialog)
+		{
+			this.uid = Integer.toString(uid);
+			this.progressDialog = progressDialog;
+		}
+
+		@Override
+		protected void onPreExecute()
+		{
+			progressDialog.show();
+		}
+		
+		protected Integer doInBackground(String... arg0) {
+			
+			/*UserInfoFunctions userinfoFunction = new UserInfoFunctions();
+			JSONObject json = userinfoFunction.getUserInfoByID(uid);
+			
+			// check for login response
+			try {
+				if (json.getString(KEY_SUCCESS) != null) {
+					String res = json.getString(KEY_SUCCESS);
+
+					if(Integer.parseInt(res) == 1){
+						JSONObject json_userinfo = json.getJSONObject("userinfo");
+						//Log.v("name", json_user.getString(KEY_NAME));
+						String[] tokens = json_userinfo.getString(KEY_FREQUEST).split("\\s");
+						Set<Integer> fRequestIDs = new HashSet<Integer>();
+						for (int i = 0; i < tokens.length-1; i++) {
+							fRequestIDs.add(Integer.parseInt(tokens[i+1]));
+						}
+						tokens = json_userinfo.getString(KEY_FRIENDS).split("\\s");
+						Set<Integer> friends = new HashSet<Integer>();
+						for (int i = 0; i < tokens.length-1; i++) {
+							friends.add(Integer.parseInt(tokens[i+1]));
+						}
+						currentUser = new User(Integer.parseInt(uid), null, null, null, null, null, fRequestIDs, null, null, 0, null);
+						int count = fRequestIDs.size();
+						for (Integer i : fRequestIDs) {
+							if (friends.contains(i)) {
+								count--;
+							}
+						}
+						friendRequests = new User[count];
+						listContent = new String[count];
+						count=0;
+						for (Integer i : fRequestIDs) {
+							if (!friends.contains(i)) {
+								JSONObject json2 = userinfoFunction.getUserInfoByID(i.toString());
+								JSONObject json_userinfo2 = json2.getJSONObject("userinfo");
+								User f = new User(i, null, null, null, null, null, null, null, null, 0, json_userinfo2.getString(KEY_USERNAME));
+								friendRequests[count] = f;
+								listContent[count] = f.getUsername(); 
+					            count++;
+							}
+							
+						}
+						
+						responseCode = 1;
+					}else{
+						responseCode = 0;
+						// Error in login
+					}
+				}
+
+			} catch (NullPointerException e) {
+				e.printStackTrace();
+
+			}
+			catch (JSONException e) {
+				e.printStackTrace();
+			}*/
+				
+			return responseCode;
+		}
+
+		@Override
+		protected void onPostExecute(Integer responseCode)
+		{
+
+	        if(listContent.length == 0){
+	        	setContentView(R.layout.main);
+	        	LinearLayout ll = (LinearLayout)findViewById(R.id.basiclayout);
+
+	        	TextView text = new TextView(getApplicationContext());
+	        	text.setText("No requests.");
+	        	text.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+	        	ll.addView(text);
+	        }else{
+	        
+		        setContentView(R.layout.activity_ask);
+		 
+		        userList = (ListView)findViewById(R.id.friendlist);
+		 
+		        submit = (Button)findViewById(R.id.challengesubmit);
+		        submit.setText("Add as friend");
+		        
+		        
+		 
+		        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
+		 
+		                android.R.layout.simple_list_item_multiple_choice, listContent);
+		 
+		        userList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+		        userList.setAdapter(adapter);
+		 
+		        submit.setOnClickListener(new Button.OnClickListener(){
+		 
+		            @Override
+		            public void onClick(View v) {
+		
+		            	String selected = "";
+		                int cntChoice = userList.getCount();
+		                SparseBooleanArray sparseBooleanArray = 
+		                		                  userList.getCheckedItemPositions();
+		 
+		                User[] requested = new User[cntChoice];
+		                
+		                for(int i = 0; i < cntChoice; i++){
+		                    if(sparseBooleanArray.get(i)) {
+		                         selected += 
+		                              userList.getItemAtPosition(i).toString() + "\n";
+		                         //requested[i] = (User) userList.getItemAtPosition(i);
+		                         friendRequests[i].updateUserFriends(currentUser.getUserID());
+		                         currentUser.updateUserFriends(friendRequests[i].getUserID());
+		                    }
+		                 }
+		                Toast.makeText(FriendRequestActivity.this,selected + 
+		                		"added as friends",Toast.LENGTH_LONG).show();
+		                
+		                //TODO: add selected user to player's friends
+		                
+		              
+		                
+		                
+		                
+		                
+		                
+		            }});
+	        }
+			progressDialog.dismiss();
+		}
+	}
 }

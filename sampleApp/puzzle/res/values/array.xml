@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <resources>
+   <string-array name="listOptions">
+     <item>Light theme</item>
+     <item>Dark theme</item>
+     </string-array>
+ 
+   <string-array name="listValues">
+     <item>Light theme selected</item>
+     <item>Dark theme selected</item>
+   </string-array>
+   
+   
+   <string-array name="question_types">
+     <item>museum</item>
+     <item>university</item>
+     <item>store</item>
+     <item>food</item>
+     <item>bar</item>
+     <item >art gallery</item>
+     </string-array>
+ 
+   <string-array name="question_entry_values">
+     <item>museum selected</item>
+     <item>university selected</item>
+     <item>store selected</item>
+     <item>food selected</item>
+     <item>bar selected</item>
+     <item >art gallery selected</item>
+   </string-array>
+   
+   <string-array name="empty_array"/>
+   
+   
+   
+    
+ </resources>

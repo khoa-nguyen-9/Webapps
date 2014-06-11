@@ -9,46 +9,101 @@
         android:id="@+id/question"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" 
-        android:textSize="25dip"
+        android:textSize="22sp"
         android:gravity="center"
-        android:layout_marginTop="20dip" />
+        android:layout_marginTop="15dip" />
      
-    
-    <Button
-            android:id="@+id/hint1"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dip"
-            android:text="Hint 1"
-            android:onClick="launchMaps" />
-    <Button
-            android:id="@+id/hint2"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dip"
-            android:text="Hint 2"
-            android:onClick="launchMaps" />
-    <Button
-            android:id="@+id/hint3"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dip"
-            android:text="Hint 3"
-            android:onClick="launchMaps" />
+    <LinearLayout
+        android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="15dip"
+		android:orientation="horizontal"  >
+		
+	    <Button
+	            android:id="@+id/hint1"
+	            android:layout_width="wrap_content"
+	            android:layout_height="fill_parent"
+	            android:layout_weight="1"
+	            android:text="@string/hint1"
+	            android:onClick="launchHint1" />
+	    <Button
+	            android:id="@+id/ask1"
+	            android:layout_width="wrap_content"
+	            android:layout_height="fill_parent"
+	            android:layout_weight="1"
+	            android:text="@string/ask"
+	            android:background="@null"
+	            android:onClick="askFriends1"
+	             />
+	</LinearLayout>
+	
+    <LinearLayout
+        android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="15dip"
+		android:orientation="horizontal"  >
+		
+	    <Button
+	            android:id="@+id/hint2"
+	            android:layout_width="wrap_content"
+	            android:layout_height="fill_parent"
+	            android:layout_weight="1"
+	            android:text="@string/hint2"
+	            android:onClick="launchHint2" />
+	    <Button
+	            android:id="@+id/ask2"
+	            android:layout_width="wrap_content"
+	            android:layout_height="fill_parent"
+	            android:layout_weight="1"
+	            android:text="@string/ask"
+	            android:background="@null"
+	            android:onClick="askFriends2"
+	             />
+	</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="15dip"
+		android:orientation="horizontal"  >
+		
+	    <Button
+	            android:id="@+id/hint3"
+	            android:layout_width="wrap_content"
+	            android:layout_height="fill_parent"
+	            android:layout_weight="1"
+	            android:text="@string/hint3"
+	            android:onClick="launchHint3" />
+	    <Button
+	            android:id="@+id/ask3"
+	            android:layout_width="wrap_content"
+	            android:layout_height="fill_parent"
+	            android:layout_weight="1"
+	            android:text="@string/ask"
+	            android:background="@null"
+	            android:onClick="askFriends3"
+	             />
+	</LinearLayout>
     
     <EditText
             android:id="@+id/answer"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:hint="Answer" />
+            android:hint="@string/answer" />
     
-    <Button
-            android:id="@+id/ok"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dip"
-            android:text="OK" />
-    
+    <LinearLayout 
+        android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="15dip"
+		android:orientation="horizontal"  >
+	    
+	    <Button
+            android:id="@+id/submitQuestionB"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:text="@string/submit" />
 
+   </LinearLayout> 
 </LinearLayout>

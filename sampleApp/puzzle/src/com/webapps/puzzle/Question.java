@@ -1,8 +1,10 @@
 package com.webapps.puzzle;
 
 import java.io.Serializable;
+import java.util.HashSet;
 
 import library.QuestionFunctions;
+import library.UserInfoFunctions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,8 +12,6 @@ import org.json.JSONObject;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.os.Parcel;
-import android.os.Parcelable;
 
 public class Question implements Serializable {
 	
@@ -20,8 +20,9 @@ public class Question implements Serializable {
 	private int qid;				// ID of the question
 	private int maker;				// The user who make the question
 	private int[] hints;  			// The list of hints for the question
+	
 	private String content;			// The content of the question
-	private int ranking; 			// The ranking of the question on leaderboard
+	private float ranking; 			// The ranking of the question on leaderboard
 	private String answer;			// The answer of the question
 	private int rewards;			// The rewards of the question
 	private String base;            // The reference of the question (museum, restaurant, etc, ...)
@@ -38,8 +39,7 @@ public class Question implements Serializable {
 	private static String KEY_PUBLISH = "publish";
 	private static String KEY_HINTS = "hints";
 	
-	
-	public Question(int maker, int[] hints, String content, int ranking, String answer, int rewards, String base, boolean publish) {
+	public Question(int maker, int[] hints, String content, float ranking, String answer, int rewards, String base, boolean publish) {
 		this.maker = maker;
 		this.hints = hints;
 		this.content = content;
@@ -50,7 +50,7 @@ public class Question implements Serializable {
 		this.publish = publish;
 	}
 	
-	public Question(int qid, int maker, int[] hints, String content, int ranking, String answer, int rewards, String base, boolean publish) {
+	public Question(int qid, int maker, int[] hints, String content, float ranking, String answer, int rewards, String base, boolean publish) {
 		this.qid = qid;
 		this.maker = maker;
 		this.hints = hints;
@@ -62,23 +62,16 @@ public class Question implements Serializable {
 		this.publish = publish;
 	}
 	
-	// Look up the table and create new hint that has the provided ID
-	public Question(int questID) {
-		GetQuestionByIDTask q = new GetQuestionByIDTask(questID);
-		q.execute();
-		this.qid = questID;
-	}
-	
-	
-
 	// Add new location to the database, update lid
-	public void addLocation() {
+	public void addQuestion() {
 		AddQuestionTask l = new AddQuestionTask(maker, hints, content, ranking, answer, rewards, base, publish);
 		l.execute();
 	}
 	
-	public void setID (int i) {
-		this.qid = i;
+	// Add new location to the database, update lid
+	public void updateranking(float ranking) {
+		UpdateRankingTask task = new UpdateRankingTask(ranking);
+		task.execute();
 	}
 	
 	// Get the user who made the question
@@ -90,9 +83,10 @@ public class Question implements Serializable {
 	public String getContent() {
 		return content;
 	}
+
 	
 	// Get the rank of the question on leader board
-	public int getRank() {
+	public float getRank() {
 		return ranking;
 	}
 	
@@ -100,6 +94,7 @@ public class Question implements Serializable {
 	public  int[] getHints() {
 		return hints;
 	}
+
 	
 	// Get the answer of the question
 	public String getAnswer() {
@@ -220,7 +215,7 @@ public class Question implements Serializable {
 							int rewards = Integer.parseInt(json_question.getString(KEY_REWARDS));
 							int ranking = Integer.parseInt(json_question.getString(KEY_QRANKING));
 							boolean publish = json_question.getString(KEY_PUBLISH).equals("1");
-							quests[i] = new Question(qid, Integer.parseInt(maker), hints, content, ranking, answer, rewards, base, publish); 
+							//quests[i] = new Question(qid, Integer.parseInt(maker), hints, content, ranking, answer, rewards, base, publish); 
 						}
 						responseCode = 1;
 					}else{
@@ -277,7 +272,7 @@ public class Question implements Serializable {
 							int maker = Integer.parseInt(json_question.getString(KEY_MAKER));
 							int ranking = Integer.parseInt(json_question.getString(KEY_QRANKING));
 							boolean publish = json_question.getString(KEY_PUBLISH).equals("1");
-							quests[i] = new Question(qid, maker, hints, content, ranking, answer, rewards, base, publish); 
+							//quests[i] = new Question(qid, maker, hints, content, ranking, answer, rewards, base, publish); 
 						}
 						responseCode = 1;
 					}else{
@@ -334,7 +329,7 @@ public class Question implements Serializable {
 							int rewards = Integer.parseInt(json_question.getString(KEY_REWARDS));
 							int maker = Integer.parseInt(json_question.getString(KEY_MAKER));
 							boolean publish = json_question.getString(KEY_PUBLISH).equals("1");
-							quests[i] = new Question(qid, maker, hints,content, Integer.parseInt(ranking), answer, rewards, base, publish); 
+							//quests[i] = new Question(qid, maker, hints,content, Integer.parseInt(ranking), answer, rewards, base, publish); 
 						}
 						responseCode = 1;
 					}else{
@@ -392,7 +387,7 @@ public class Question implements Serializable {
 							int rewards = Integer.parseInt(json_question.getString(KEY_REWARDS));
 							int ranking = Integer.parseInt(json_question.getString(KEY_QRANKING));
 							boolean publish = json_question.getString(KEY_PUBLISH).equals("1");
-							quests[i] = new Question(qid, maker, hints, content, ranking, answer, rewards, base, publish); 
+							//quests[i] = new Question(qid, maker, hints, content, ranking, answer, rewards, base, publish); 
 						}
 						responseCode = 1;
 					}else{
@@ -425,7 +420,7 @@ public class Question implements Serializable {
 		private String base;            // The reference of the question (museum, restaurant, etc, ...)
 		private String publish;        // Is the question publish to leaderboard
 
-		public AddQuestionTask(int maker, int[] hints, String content, int ranking, String answer, int rewards, String base, boolean publish)
+		public AddQuestionTask(int maker, int[] hints, String content, float ranking2, String answer, int rewards, String base, boolean publish)
 		{
 			this.maker = Integer.toString(maker);
 			String hintstring = " ";
@@ -434,7 +429,7 @@ public class Question implements Serializable {
 			}
 			this.hints = hintstring;
 			this.content = content;
-			this.ranking = Integer.toString(ranking);
+			this.ranking = Float.toString(ranking2);
 			this.answer = answer;
 			this.rewards = Integer.toString(rewards);
 			this.base = base;
@@ -466,6 +461,44 @@ public class Question implements Serializable {
 					}
 				}
 
+			} catch (NullPointerException e) {
+				e.printStackTrace();
+
+			}
+			catch (JSONException e) {
+				e.printStackTrace();
+			}
+			
+			return responseCode;
+		}
+	}
+	
+	// AsyncTask to update answered question IDs from database 
+	private class UpdateRankingTask extends AsyncTask<String, Void, Integer> {
+
+		private String newRanking;
+		
+		private int responseCode = 0;
+
+		public UpdateRankingTask(float ranking)
+		{
+			this.newRanking = Float.toString(ranking);
+		}
+
+		protected Integer doInBackground(String... arg0) {
+			
+			QuestionFunctions questionFunction = new QuestionFunctions();
+			JSONObject json = questionFunction.updateRanking(Integer.toString(qid), newRanking);
+			
+			// check for login response
+			try {
+				if (json.getString(KEY_SUCCESS) != null) {
+						responseCode = 1;
+				} else{
+						responseCode = 0;
+						// Error in login
+				}
+			
 			} catch (NullPointerException e) {
 				e.printStackTrace();
 

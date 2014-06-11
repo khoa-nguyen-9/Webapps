@@ -2,9 +2,6 @@
 <resources>
 
     <string name="app_name">puzzle</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
     <string name="action_settings">Settings</string>
     <string name="home">Home, Sweet Home</string>
 	<string name="questions">Questions ?</string>
@@ -13,10 +10,26 @@
 	<string name="how_to_play">How To Play</string>
 	<string name="about">About</string>
 	<string name="logout">Log out</string>
-	<string name="discover">Discover your surroundings!</string>
+	<string name="discover">Discover places and events around you!</string>
 	<string name="notifications">Notifications:</string>
 	<string name="noNotifications">Nothing yet!</string>
 	<string name="bb">Big Ben</string>
 	<string name="TS">Trafalgar Square</string>
+	<string name="submit">Submit</string>
+	<string name="answer">enter your answer</string>
+	<string name="hint1">Hint 1</string>
+	<string name="hint2">Hint 2</string>
+	<string name="hint3">Hint 3</string>
+	<string name="credits">Credits: </string>
+	<string name="friends">Friends</string>
+	<string name="messages">Messages</string>
+	<string name="ask">Ask</string>
+	<string name="coins">Credits: </string>
+	<color name="white">#FFFFFF</color>
+	<string name="send">Send</string>
+	<color name="pink">#FFC0CB</color>
+	<color name="blue">#0000FF</color>
+	<color name="red">#ffff0000</color>
+	<string name="rate">Well done. Please, rate the question.</string>
 
 </resources>

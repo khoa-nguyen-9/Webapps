@@ -13,6 +13,7 @@ public class UserInfoFunctions {
     private static String userinfoURL = "http://khoatestsite.hostoi.com/android_api/userinfo.php";
     
     private static String get_tag = "getUserinfoByID";
+    private static String get_all_tag = "getAllUserinfo";
     private static String update_friends_tag = "updateFriends";
     private static String update_answered_tag = "updateAnswered";
     private static String update_checked_tag = "updateChecked";
@@ -20,6 +21,7 @@ public class UserInfoFunctions {
     private static String update_challenge_tag = "updateChallenge";
     private static String update_frequest_tag = "updateFrequest";
     private static String update_lrequest_tag = "updateLrequest";
+    private static String update_requester_tag = "updateRequester";
     private static String update_credits_tag = "updateCredits";
     
     private static String add_tag = "storeUserinfo";
@@ -38,6 +40,15 @@ public class UserInfoFunctions {
         JSONObject json = jsonParser.getJSONFromUrl(userinfoURL, params);
         return json;
     }
+    
+    // get all the userinfo details
+    public JSONObject getAllUserInfo(){
+        // Building Parameters
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("tag", get_all_tag));
+        JSONObject json = jsonParser.getJSONFromUrl(userinfoURL, params);
+        return json;
+    } 
     
     // update user's friends
     public JSONObject updateFriends(String uid, String friends){
@@ -116,6 +127,17 @@ public class UserInfoFunctions {
         return json;
     }
     
+    // update user's location request
+    public JSONObject updateRequester(String uid, String requester){
+        // Building Parameters
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", update_requester_tag));
+        params.add(new BasicNameValuePair("uid", uid));
+        params.add(new BasicNameValuePair("requester", requester));
+        JSONObject json = jsonParser.getJSONFromUrl(userinfoURL, params);
+        return json;
+    }
+    
     // update user's credits
     public JSONObject updateCredits(String uid, String credits){
         // Building Parameters
@@ -128,12 +150,12 @@ public class UserInfoFunctions {
     }
     
     // Add new user to database, only call once when user register
-    public JSONObject addUser(String uid){
+    public JSONObject addUser(String uid, String username){
         // Building Parameters
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("tag", add_tag));
         params.add(new BasicNameValuePair("uid", uid));
- 
+        params.add(new BasicNameValuePair("username", username));
         // getting JSON Object
         JSONObject json = jsonParser.getJSONFromUrl(userinfoURL, params);
         // return json

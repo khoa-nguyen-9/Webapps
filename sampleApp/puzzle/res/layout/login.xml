@@ -1,27 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#3b3b3b" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_background" >
  
-    <LinearLayout
+   <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
         android:padding="10dip" >
         <!--  View Title Label -->
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dip"
-            android:text="LOGIN"
-            android:textSize="25dip"
-            android:textStyle="bold" />
+        <TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginBottom="10dip" android:text="LOGIN" android:textSize="25dip" android:textStyle="bold"/>
+        
         <!--  Email Label -->
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Email" />
+            android:text="Username" />
         <!--  Email TextField -->
         <EditText
             android:id="@+id/loginEmail"
@@ -51,15 +46,16 @@
                     android:padding="10dip"
                     android:textStyle="bold"/>
  
-        <!--  Login Button -->
-        <Button
+
+ 
+        <!--  Link to Registration Screen -->
+
+        <ImageView
             android:id="@+id/btnLogin"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dip"
-            android:text="Login" />
- 
-        <!--  Link to Registration Screen -->
+            android:src="@drawable/loginbutton" />
+
         <Button
             android:id="@+id/btnLinkToRegisterScreen"
             android:layout_width="fill_parent"
@@ -71,4 +67,4 @@
             android:textStyle="bold" />
     </LinearLayout>
  
-</ScrollView>
+</RelativeLayout>

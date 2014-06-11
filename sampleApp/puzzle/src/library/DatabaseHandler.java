@@ -1,11 +1,6 @@
 package library;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
-import org.apache.http.NameValuePair;
-import org.json.JSONArray;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -32,17 +27,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_EMAIL = "email";
     private static final String KEY_UID = "uid";
     private static final String KEY_CREATED_AT = "created_at";
-    
-    // Question table name
-    private static final String TABLE_QUESTION = "question";
- 
-    // Login Table Columns names
-    private static final String KEY_QID = "qid";
-    private static final String KEY_MAKER = "maker";
-    public static final String KEY_QCONTENT = "qcontent";
-    private static final String KEY_QRANKING = "qranking";
-    private static final String KEY_ANSWER = "answer";
-    private static final String KEY_REWARDS = "rewards";
  
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -57,15 +41,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_EMAIL + " TEXT UNIQUE,"
                 + KEY_UID + " TEXT,"
                 + KEY_CREATED_AT + " TEXT" + ")";
-        String CREATE_QUESTION_TABLE = "CREATE TABLE " + TABLE_QUESTION + "("
-                + KEY_QID + " INTEGER PRIMARY KEY,"
-                + KEY_MAKER + " INTEGER,"
-                + KEY_QCONTENT + " TEXT,"
-                + KEY_QRANKING + " INTEGER,"
-                + KEY_ANSWER + " TEXT,"
-                + KEY_REWARDS + " INTEGER" + ")";
         db.execSQL(CREATE_LOGIN_TABLE);
-        db.execSQL(CREATE_QUESTION_TABLE);
     }
  
     // Upgrading database
@@ -73,7 +49,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOGIN);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_QUESTION);
         // Create tables again
         onCreate(db);
     }
@@ -95,24 +70,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
     
-    /**
-     * Storing user details in database
-     * */
-    public void addQuestion(String qid, String maker, String qcontent, String qranking, String answer, String rewards) {
-        SQLiteDatabase db = this.getWritableDatabase();
- 
-        ContentValues values = new ContentValues();
-        values.put(KEY_QID, qid); // Name
-        values.put(KEY_MAKER, maker); // Email
-        values.put(KEY_QCONTENT, qcontent); // Email
-        values.put(KEY_QRANKING, qranking); // Created At
-        values.put(KEY_ANSWER, answer); // Created At
-        values.put(KEY_REWARDS, rewards); // Created At
-        // Inserting Row
-        db.insert(TABLE_QUESTION, null, values);
-        db.close(); // Closing database connection
-    }
-    
     public void addUser(String email) {
         SQLiteDatabase db = this.getWritableDatabase();
  
@@ -122,12 +79,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Inserting Row
         db.insert(TABLE_LOGIN, null, values);
         db.close(); // Closing database connection
-    }
-    
-    public NameValuePair getUser() {
-    	List<NameValuePair> params = new ArrayList<NameValuePair>();
-    	//params.add(new BasicNameValuePair("email"))
-    	return null;    	
     }
  
     /**
@@ -146,31 +97,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             user.put("email", cursor.getString(2));
             user.put("uid", cursor.getString(3));
             user.put("created_at", cursor.getString(4));
-        }
-        cursor.close();
-        db.close();
-        // return user
-        return user;
-    }
-
-    /**
-     * Getting user data from database
-     * */
-    public HashMap<String, String> getQuestionDetails(){
-        HashMap<String,String> user = new HashMap<String,String>();
-        String selectQuery = "SELECT  * FROM " + TABLE_QUESTION;
- 
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        // Move to first row
-        cursor.moveToFirst();
-        if(cursor.getCount() > 0){
-            user.put("qid", cursor.getString(1));
-            user.put("maker", cursor.getString(2));
-            user.put("qcontent", cursor.getString(3));
-            user.put("qranking", cursor.getString(4));
-            user.put("answer", cursor.getString(5));
-            user.put("rewards", cursor.getString(6));
         }
         cursor.close();
         db.close();
@@ -217,15 +143,4 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
     
-    /**
-     * Re crate database
-     * Delete all tables and create them again
-     * */
-    public void resetQuestionTables(){
-        SQLiteDatabase db = this.getWritableDatabase();
-        // Delete All Rows
-        db.delete(TABLE_QUESTION, null, null);
-        db.close();
-    }
- 
 }

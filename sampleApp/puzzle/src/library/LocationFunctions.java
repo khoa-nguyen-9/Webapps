@@ -2,6 +2,7 @@ package library;
 import java.util.ArrayList;
 import java.util.List;
  
+
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
@@ -9,10 +10,13 @@ import org.json.JSONObject;
 public class LocationFunctions {
  
     private JSONParser jsonParser;
+
+	
  
     private static String locationURL = "http://khoatestsite.hostoi.com/android_api/location.php";
     
     private static String get_tag = "getLocationByID";
+    private static String get_all_tag = "getAllLocations";
     private static String add_tag = "storeLocation";
  
     // constructor
@@ -30,8 +34,17 @@ public class LocationFunctions {
         return json;
     }
  
+    // Get the location by providing id
+    public JSONObject getLocations(){
+        // Building Parameters
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", get_all_tag));
+        JSONObject json = jsonParser.getJSONFromUrl(locationURL, params);
+        return json;
+    }
+    
     // Add new user to database, return ID
-    public JSONObject addQuestion(String x, String y, String lname){
+    public JSONObject addLocation(String x, String y, String lname){
         // Building Parameters
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("tag", add_tag));

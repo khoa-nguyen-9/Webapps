@@ -8,7 +8,6 @@ package directions;
 import java.util.ArrayList;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;

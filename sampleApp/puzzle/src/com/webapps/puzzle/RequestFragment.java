@@ -21,7 +21,7 @@ public class RequestFragment extends ListFragment {
 	  public void onActivityCreated(Bundle savedInstanceState) {
 	    super.onActivityCreated(savedInstanceState);
 	    String[] values = new String[] { "Friend requests", "Hint help",
-	    		"Questions by friends"};
+	    		"Questions by friends", "Messages"};
 	    
 	    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
 	        android.R.layout.simple_list_item_1, values);
@@ -45,8 +45,14 @@ public class RequestFragment extends ListFragment {
 				 startActivity(hintLocations);
 				 break;
 			 case 2:
-				 //Intent friendQuestions = new Intent(getActivity().getApplicationContext(),
-					//	 )
+				 Intent friendQuestions = new Intent(getActivity().getApplicationContext(),
+				   QuestionsByFriends.class);
+				 startActivity(friendQuestions);
+				 break;
+			 case 3:
+				 Intent message = new Intent(getActivity().getApplicationContext(),
+				   MessageListActivity.class);
+				 startActivity(message);
 				 break;
 		  }
 		  

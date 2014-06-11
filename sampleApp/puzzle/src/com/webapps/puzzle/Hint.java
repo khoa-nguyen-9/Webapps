@@ -1,5 +1,10 @@
 package com.webapps.puzzle;
 
+import java.io.Serializable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import library.HintFunctions;
 
 import org.json.JSONException;
@@ -8,7 +13,7 @@ import org.json.JSONObject;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
-public class Hint {
+public class Hint implements Serializable{
 	
 	private static String KEY_SUCCESS = "success";
 	private static String KEY_HID = "hid";
@@ -19,21 +24,15 @@ public class Hint {
 	private int lid;		// The location ID to lookup in the database
 	private String content;	// The content of the hint
 	
-	public Hint (int lid, String con) {
+	public Hint (int hid, int lid, String con) {
+		this.hid = hid;
 		this.lid = lid;
 		this.content = con;
 	}
-	
-	// Look up the table and create new hint that has the provided ID
-	public Hint (int hintID, ProgressDialog progressDialog) {
-		GetHintTask h = new GetHintTask(hintID, progressDialog);
-		h.execute();
-		this.hid = hintID;
-	}
-	
+
 	// Add new location to the database, update lid
 	public void addLocation(ProgressDialog progressDialog) {
-		AddHintTask l = new AddHintTask(lid, content, progressDialog);
+		AddHintTask l = new AddHintTask(progressDialog);
 		l.execute();
 	}
 	
@@ -117,14 +116,10 @@ public class Hint {
 	private class AddHintTask extends AsyncTask<String, Void, Integer> {
 		
 		private int responseCode = 0;
-		private int lid;
-		private String hcontent;
 		private ProgressDialog progressDialog;
 
-		public AddHintTask(int lid, String hcontent, ProgressDialog progressDialog)
+		public AddHintTask(ProgressDialog progressDialog)
 		{
-			this.lid = lid;
-			this.hcontent = hcontent;
 			this.progressDialog = progressDialog;
 		}
 
@@ -137,7 +132,7 @@ public class Hint {
 		protected Integer doInBackground(String... arg0) {
 			
 			HintFunctions hintFunction = new HintFunctions();
-			JSONObject json = hintFunction.addHint(Integer.toString(lid), hcontent);
+			JSONObject json = hintFunction.addHint(Integer.toString(lid), content);
 			
 			// check for login response
 			try {
