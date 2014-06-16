@@ -1,6 +1,6 @@
 <?php
 
-define("DB_HOST", "127.0.0.1");
-define("DB_NAME", "webapps");
-define("DB_USER", "root");
-define("DB_PASS", "pass");
+define("DB_HOST", "mysql10.000webhost.com");
+define("DB_USER", "a5179683_khoa");
+define("DB_PASSWORD", "test123");
+define("DB_DATABASE", "a5179683_testdb");
