@@ -6,23 +6,10 @@
  */
 class Registration
 {
-    /**
-     * @var object $db_connection The database connection
-     */
     private $db_connection = null;
-    /**
-     * @var array $errors Collection of error messages
-     */
     public $errors = array();
-    /**
-     * @var array $messages Collection of success / neutral messages
-     */
     public $messages = array();
 
-    /**
-     * the function "__construct()" automatically starts whenever an object of this class is created,
-     * you know, when you do "$registration = new Registration();"
-     */
     public function __construct()
     {
         if (isset($_POST["register"])) {
@@ -30,10 +17,6 @@ class Registration
         }
     }
 
-    /**
-     * handles the entire registration process. checks all error possibilities
-     * and creates a new user in the database if everything is fine
-     */
     private function registerNewUser()
     {
         if (empty($_POST['user_name'])) {
@@ -66,12 +49,8 @@ class Registration
             && ($_POST['user_password_new'] === $_POST['user_password_repeat'])
         ) {
             // create a database connection
-            $this->db_connection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-
-            // change character set to utf8 and check it
-            if (!$this->db_connection->set_charset("utf8")) {
-                $this->errors[] = $this->db_connection->error;
-            }
+            $this->db_connection = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
+            var_dump($this->db_connection->connect_errno);
 
             // if no connection errors (= working database connection)
             if (!$this->db_connection->connect_errno) {
@@ -85,18 +64,18 @@ class Registration
                 // crypt the user's password with PHP 5.5's password_hash() function, results in a 60 character
                 // hash string. the PASSWORD_DEFAULT constant is defined by the PHP 5.5, or if you are using
                 // PHP 5.3/5.4, by the password hashing compatibility library
-                $user_password_hash = password_hash($user_password, PASSWORD_DEFAULT);
+                $user_password_hash = hashSSHA($user_password);
 
                 // check if user or email address already exists
-                $sql = "SELECT * FROM Users WHERE user_name = '" . $user_name . "' OR user_email = '" . $user_email . "';";
+                $sql = "SELECT * FROM USERS WHERE email = '" . $user_email . "';";
                 $query_check_user_name = $this->db_connection->query($sql);
 
                 if ($query_check_user_name->num_rows == 1) {
                     $this->errors[] = "Sorry, that username / email address is already taken.";
                 } else {
                     // write new user's data into database
-                    $sql = "INSERT INTO Users (user_name, user_password_hash, user_email)
-                            VALUES('" . $user_name . "', '" . $user_password_hash . "', '" . $user_email . "');";
+                    $sql = "INSERT INTO USERS (name, email, encrypted_password)
+                            VALUES('" . $user_name . "', '" . $user_email . "', '" . $user_password_hash . "');";
                     $query_new_user_insert = $this->db_connection->query($sql);
 
                     // if user has been added successfully
